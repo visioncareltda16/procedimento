@@ -7,12 +7,6 @@ export default function DoctorVoucherCard({
   currentUserId,
   isAdmin,
   onUpdate,
-  onSchedule
-}: { 
-  paciente: any, 
-  currentUserId: string,
-  isAdmin: boolean,
-  onUpdate,
   onSchedule,
   onEdit,
   onDelete,
