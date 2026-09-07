@@ -97,10 +97,18 @@ export async function updatePatient(id: string, data: { nome: string, prontuario
     if (currentPatient?.status !== 'Cancelado') {
       updateData.status = 'Agendado';
     }
+    if (
+      currentPatient?.dataAgendamento?.toISOString() !== updateData.dataAgendamento?.toISOString() ||
+      currentPatient?.executionLocationId !== updateData.executionLocationId ||
+      currentPatient?.executingDoctorId !== updateData.executingDoctorId
+    ) {
+      updateData.pacienteConfirmado = false;
+    }
   } else if (data.executionLocationId !== undefined || data.dataAgendamento !== undefined) {
     // If the user modified these fields and one of them is missing, downgrade to "No Aguardo"
     if (currentPatient?.status === 'Agendado' && (!updateData.executionLocationId || !updateData.dataAgendamento)) {
       updateData.status = 'No Aguardo';
+      updateData.pacienteConfirmado = false;
     }
   }
 
@@ -132,7 +140,8 @@ export async function schedulePatient(patientId: string, executionLocationId: st
       executionLocationId, 
       executingDoctorId,
       dataAgendamento: new Date(dataAgendamentoStr + 'T12:00:00Z'),
-      status: 'Agendado' 
+      status: 'Agendado',
+      pacienteConfirmado: false
     },
     include: { executionLocation: true, solicitingClinic: true, executingDoctor: true }
   });
@@ -154,6 +163,16 @@ export async function schedulePatient(patientId: string, executionLocationId: st
     }
   }
 
+  revalidatePath('/dashboard');
+  revalidatePath('/dashboard/pacientes');
+  return patient;
+}
+
+export async function confirmPaciente(patientId: string) {
+  const patient = await prisma.patient.update({
+    where: { id: patientId },
+    data: { pacienteConfirmado: true }
+  });
   revalidatePath('/dashboard');
   revalidatePath('/dashboard/pacientes');
   return patient;
@@ -433,8 +452,25 @@ export async function removeUserFromClinic(userId: string, clinicId: string) {
 
 export async function getExecutingDoctors() {
   return await prisma.executingDoctor.findMany({
-    include: { repasses: { include: { procedure: true } } }
+    include: { 
+      repasses: { include: { procedure: true } },
+      executionLocations: { include: { location: true } }
+    }
   });
+}
+
+export async function assignLocationToDoctor(doctorId: string, locationId: string) {
+  await prisma.doctorExecutionLocation.create({
+    data: { doctorId, locationId }
+  });
+  revalidatePath('/dashboard/configuracoes');
+}
+
+export async function removeLocationFromDoctor(doctorId: string, locationId: string) {
+  await prisma.doctorExecutionLocation.deleteMany({
+    where: { doctorId, locationId }
+  });
+  revalidatePath('/dashboard/configuracoes');
 }
 
 export async function createExecutingDoctor(nome: string, crm?: string, contato?: string) {

@@ -97,6 +97,7 @@ export default function DashboardClient({ stats, patients }: { stats: any, patie
           <p style={{ color: 'var(--text-secondary)', fontStyle: 'italic' }}>Nenhum procedimento agendado para hoje.</p>
         )}
         </div>
+        </div>
 
         {/* RIGHT COLUMN */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
