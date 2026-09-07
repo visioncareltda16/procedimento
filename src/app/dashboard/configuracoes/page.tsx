@@ -6,7 +6,7 @@ import { authOptions } from '@/lib/authOptions';
 
 export default async function ConfiguracoesPage() {
   const session = await getServerSession(authOptions);
-  const currentUserRole = (session?.user as any)?.role || 'CAPTADOR';
+  const currentUserRole = String((session?.user as any)?.role || 'CAPTADOR').toUpperCase();
 
   if (currentUserRole !== 'ADMIN') {
     redirect('/dashboard');

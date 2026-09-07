@@ -6,7 +6,7 @@ import { authOptions } from '@/lib/authOptions';
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions);
   const currentUserId = (session?.user as any)?.id || '';
-  const currentUserRole = (session?.user as any)?.role || 'CAPTADOR';
+  const currentUserRole = String((session?.user as any)?.role || 'CAPTADOR').toUpperCase();
 
   let stats: {
     total: number;

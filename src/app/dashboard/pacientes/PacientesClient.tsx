@@ -196,7 +196,7 @@ export default function PacientesClient({
     setValor(proc ? proc.price : '');
   };
 
-  const canApprove = currentUserRole === 'ADMIN' || currentUserRole === 'MEDICO';
+  const canApprove = currentUserRole?.toUpperCase() === 'ADMIN' || currentUserRole?.toUpperCase() === 'MEDICO';
 
   const filteredLocations = scheduleDoctorId ? locations.filter((loc: any) => {
     const doc = doctors.find((d: any) => d.id === scheduleDoctorId);
@@ -246,7 +246,7 @@ export default function PacientesClient({
         </button>
       </div>
 
-      {currentUserRole === 'MEDICO' ? (
+      {currentUserRole?.toUpperCase() === 'MEDICO' ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
           {filteredPacientes.map(paciente => (
             <DoctorVoucherCard 

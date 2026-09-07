@@ -12,7 +12,7 @@ export default async function PacientesPage() {
 
   const session = await getServerSession(authOptions);
   const currentUserId = (session?.user as any)?.id || '';
-  const currentUserRole = (session?.user as any)?.role || 'CAPTADOR';
+  const currentUserRole = String((session?.user as any)?.role || 'CAPTADOR').toUpperCase();
 
   try {
     pacientes = await getPatients(currentUserId, currentUserRole);
