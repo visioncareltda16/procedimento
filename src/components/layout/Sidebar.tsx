@@ -11,11 +11,14 @@ export default function Sidebar({ userRole = 'CAPTADOR' }: { userRole?: string }
   return (
     <aside className={`${styles.sidebar} glass-panel`}>
       <div className={styles.logoContainer}>
-        <img 
-          src="/logo.png" 
-          alt="Vision Care" 
-          style={{ width: '100%', maxWidth: '180px', height: 'auto', objectFit: 'contain' }} 
-        />
+        <div className={styles.logoWrapper}>
+          <img 
+            src="/logo.png" 
+            alt="Vision Care" 
+            className={styles.shiningLogo}
+          />
+        </div>
+        <h2 className={styles.logoSubtitle}>PROCEDIMENTOS</h2>
       </div>
       
       <nav className={styles.nav}>
