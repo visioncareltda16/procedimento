@@ -50,7 +50,8 @@ export default function Sidebar({
 
       <div className={styles.footer}>
         <button className={styles.logoutBtn} onClick={() => {
-          if (session?.user?.id) localStorage.removeItem(`app_session_expiry_${session.user.id}`);
+          const userId = (session?.user as any)?.id;
+          if (userId) localStorage.removeItem(`app_session_expiry_${userId}`);
           signOut({ callbackUrl: '/login' });
         }}>
           <LogOut size={20} />
