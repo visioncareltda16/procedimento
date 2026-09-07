@@ -8,11 +8,7 @@ import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead, g
 import { useSession } from 'next-auth/react';
 import SessionTimer from './SessionTimer';
 
-interface HeaderProps {
-  onMenuToggle?: () => void;
-}
-
-export default function Header({ onMenuToggle }: HeaderProps) {
+export default function Header() {
   const { theme, setTheme } = useTheme();
   const { data: session } = useSession();
   const [mounted, setMounted] = useState(false);
@@ -60,9 +56,6 @@ export default function Header({ onMenuToggle }: HeaderProps) {
   return (
     <header className={`${styles.header} glass-panel`}>
       <div className={styles.titleGroup}>
-        <button className={styles.mobileMenuBtn} onClick={onMenuToggle}>
-          <Menu size={24} />
-        </button>
         <div className={styles.titleContainer}>
           <h1 className={styles.pageTitle}>Solicitações</h1>
           <p className={styles.pageSubtitle}>Hub de procedimentos médicos Vision Care</p>

@@ -1,32 +1,24 @@
 'use client';
 
 import Link from 'next/link';
-import { Home, Users, FileText, Settings, LogOut, X } from 'lucide-react';
+import { Home, Users, FileText, Settings, LogOut } from 'lucide-react';
 import styles from './Sidebar.module.css';
 import { signOut } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 
 export default function Sidebar({ 
-  userRole = 'CAPTADOR', 
-  isOpen = false, 
-  onClose 
+  userRole = 'CAPTADOR' 
 }: { 
-  userRole?: string, 
-  isOpen?: boolean, 
-  onClose?: () => void 
+  userRole?: string
 }) {
   const pathname = usePathname();
   
   return (
-    <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''} glass-panel`}>
-      <button className={styles.closeBtn} onClick={onClose}>
-        <X size={24} />
-      </button>
-      
+    <aside className={`${styles.sidebar} glass-panel`}>
       <div className={styles.logoContainer}>
         <div className={styles.logoWrapper}>
           <img 
-            src="/logo.png" 
+            src="/vision-logo-oficial.png" 
             alt="Vision Care" 
             className={styles.shiningLogo}
           />

@@ -11,36 +11,9 @@
   transition: transform 0.3s ease;
 }
 
-.closeBtn {
-  display: none;
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: transparent;
-  border: none;
-  color: var(--text-secondary);
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: var(--radius-sm);
-}
-
 @media (max-width: 768px) {
   .sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh;
-    border-radius: 0;
-    transform: translateX(-100%);
-    box-shadow: 4px 0 15px rgba(0,0,0,0.1);
-  }
-  
-  .sidebar.open {
-    transform: translateX(0);
-  }
-
-  .closeBtn {
-    display: block;
+    display: none;
   }
 }
 
@@ -79,23 +52,27 @@
   
   /* Text shine animation */
   background: linear-gradient(
-    120deg,
+    to right,
     var(--primary-color) 0%,
     var(--primary-color) 40%,
-    #a8c7fa 50%,
+    #e2e8f0 50%,
     var(--primary-color) 60%,
     var(--primary-color) 100%
   );
   background-size: 200% auto;
   color: transparent;
+  -webkit-text-fill-color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
   animation: shineText 3s linear infinite;
 }
 
 @keyframes shineText {
-  to {
+  0% {
     background-position: 200% center;
+  }
+  100% {
+    background-position: -200% center;
   }
 }
 

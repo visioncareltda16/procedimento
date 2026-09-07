@@ -6,22 +6,7 @@
   position: relative;
 }
 
-.overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 100;
-  backdrop-filter: blur(2px);
-  animation: fadeIn 0.2s ease;
-}
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
 
 .mainContent {
   flex: 1;
@@ -40,5 +25,6 @@
   .layout {
     padding: 0.5rem;
     gap: 0.5rem;
+    padding-bottom: 90px; /* Space for bottom nav */
   }
 }
