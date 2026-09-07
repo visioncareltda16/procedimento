@@ -27,20 +27,20 @@ export default function Sidebar({
       </div>
       
       <nav className={styles.nav}>
-        <Link href="/dashboard" className={`${styles.navItem} ${pathname === '/dashboard' ? styles.active : ''}`} onClick={onClose}>
+        <Link href="/dashboard" className={`${styles.navItem} ${pathname === '/dashboard' ? styles.active : ''}`}>
           <Home size={20} />
           <span>Dashboard</span>
         </Link>
-        <Link href="/dashboard/pacientes" className={`${styles.navItem} ${pathname?.includes('/pacientes') ? styles.active : ''}`} onClick={onClose}>
+        <Link href="/dashboard/pacientes" className={`${styles.navItem} ${pathname?.includes('/pacientes') ? styles.active : ''}`}>
           <Users size={20} />
           <span>Pacientes</span>
         </Link>
-        <Link href="/dashboard/relatorios" className={`${styles.navItem} ${pathname?.includes('/relatorios') ? styles.active : ''}`} onClick={onClose}>
+        <Link href="/dashboard/relatorios" className={`${styles.navItem} ${pathname?.includes('/relatorios') ? styles.active : ''}`}>
           <FileText size={20} />
           <span>Relatórios</span>
         </Link>
         {userRole === 'ADMIN' && (
-          <Link href="/dashboard/configuracoes" className={`${styles.navItem} ${pathname?.includes('/configuracoes') ? styles.active : ''}`} onClick={onClose}>
+          <Link href="/dashboard/configuracoes" className={`${styles.navItem} ${pathname?.includes('/configuracoes') ? styles.active : ''}`}>
             <Settings size={20} />
             <span>Configurações</span>
           </Link>
