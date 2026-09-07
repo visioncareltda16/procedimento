@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     const admin = await prisma.user.create({
       data: {
         name: 'Administrador Vercel',
-        email: 'admin@visioncare.com.br',
+        email: 'admin@vision.com',
         password: hashedPassword,
         role: 'ADMIN',
         active: true
