@@ -12,13 +12,19 @@ export async function getPatients(userId?: string, userRole?: string) {
   if (userRole === 'CAPTADOR' && userId) {
     const userClinics = await prisma.userClinic.findMany({ where: { userId } });
     const clinicIds = userClinics.map(uc => uc.clinicId);
-    whereClause.solicitingClinicId = { in: clinicIds };
+    whereClause.OR = [
+      { solicitingClinicId: { in: clinicIds } },
+      { requesterId: userId }
+    ];
   } else if (userRole === 'MEDICO' && userId) {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (user?.executingDoctorId) {
-      whereClause.executingDoctorId = user.executingDoctorId;
+      whereClause.OR = [
+        { executingDoctorId: user.executingDoctorId },
+        { requesterId: userId }
+      ];
     } else {
-      whereClause.executingDoctorId = 'unassigned';
+      whereClause.requesterId = userId;
     }
   }
 
@@ -198,13 +204,19 @@ export async function getDashboardStats(userId?: string, userRole?: string) {
   if (userRole === 'CAPTADOR' && userId) {
     const userClinics = await prisma.userClinic.findMany({ where: { userId } });
     const clinicIds = userClinics.map(uc => uc.clinicId);
-    whereClause.solicitingClinicId = { in: clinicIds };
+    whereClause.OR = [
+      { solicitingClinicId: { in: clinicIds } },
+      { requesterId: userId }
+    ];
   } else if (userRole === 'MEDICO' && userId) {
     const user = await prisma.user.findUnique({ where: { id: userId } });
     if (user?.executingDoctorId) {
-      whereClause.executingDoctorId = user.executingDoctorId;
+      whereClause.OR = [
+        { executingDoctorId: user.executingDoctorId },
+        { requesterId: userId }
+      ];
     } else {
-      whereClause.executingDoctorId = 'unassigned';
+      whereClause.requesterId = userId;
     }
   }
 
