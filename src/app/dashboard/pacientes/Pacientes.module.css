@@ -117,11 +117,13 @@
   justify-content: center;
   z-index: 1000;
   animation: fadeIn 0.2s ease;
+  padding: 1rem;
 }
 
 .modal {
   width: 100%;
   max-width: 500px;
+  max-height: 90vh; /* Prevents modal from overflowing screen */
   background: var(--bg-secondary);
   border-radius: var(--radius-lg);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -167,6 +169,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  overflow-y: auto; /* Enables scrolling for long forms */
+  -webkit-overflow-scrolling: touch;
 }
 
 .modalFooter {
