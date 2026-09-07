@@ -236,7 +236,7 @@ export default function PacientesClient({
               key={paciente.id} 
               paciente={paciente} 
               currentUserId={currentUserId} 
-              isAdmin={currentUserRole === 'ADMIN'}
+              isAdmin={false}
               onUpdate={() => router.refresh()}
               onSchedule={() => openScheduleModal(paciente.id)}
             />

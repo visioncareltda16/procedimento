@@ -12,12 +12,12 @@ export default async function ConfiguracoesPage() {
     redirect('/dashboard');
   }
 
-  let procedures = [];
-  let clinics = [];
-  let locations = [];
-  let users = [];
-  let doctors = [];
-  let sessionTimeout = '60'; // Default
+  let procedures: any[] = [];
+  let clinics: any[] = [];
+  let locations: any[] = [];
+  let users: any[] = [];
+  let doctors: any[] = [];
+  let sessionTimeout: string = '60'; // Default
   
   try {
     procedures = await getProcedures();

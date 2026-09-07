@@ -20,7 +20,7 @@ export default function RelatoriosClient({ initialData }: { initialData: any }) 
       const opt = {
         margin:       0.5,
         filename:     `relatorio_${activeTab}_${new Date().getTime()}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
+        image:        { type: 'jpeg' as const, quality: 0.98 },
         html2canvas:  { scale: 2 },
         jsPDF:        { unit: 'in', format: 'letter', orientation: 'landscape' }
       };

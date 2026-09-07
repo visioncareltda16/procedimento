@@ -4,11 +4,11 @@ import PacientesClient from './PacientesClient';
 import { authOptions } from '@/lib/authOptions';
 
 export default async function PacientesPage() {
-  let pacientes = [];
-  let procedures = [];
-  let clinics = [];
-  let locations = [];
-  let doctors = [];
+  let pacientes: any[] = [];
+  let procedures: any[] = [];
+  let clinics: any[] = [];
+  let locations: any[] = [];
+  let doctors: any[] = [];
 
   const session = await getServerSession(authOptions);
   const currentUserId = (session?.user as any)?.id || '';

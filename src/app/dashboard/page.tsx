@@ -8,15 +8,22 @@ export default async function DashboardPage() {
   const currentUserId = (session?.user as any)?.id || '';
   const currentUserRole = (session?.user as any)?.role || 'CAPTADOR';
 
-  let stats = {
+  let stats: {
+    total: number;
+    agendados: number;
+    aguardo: number;
+    cancelados: number;
+    dataLocais: { name: string; value: number }[];
+    dataProcedimentos: { name: string; value: number }[];
+  } = {
     total: 0,
     agendados: 0,
     aguardo: 0,
     cancelados: 0,
-    dataLocais: [],
-    dataProcedimentos: []
+    dataLocais: [] as { name: string; value: number }[],
+    dataProcedimentos: [] as { name: string; value: number }[]
   };
-  let patients = [];
+  let patients: any[] = [];
 
   try {
     stats = await getDashboardStats(currentUserId, currentUserRole);

@@ -1,8 +1,12 @@
-import * as admin from 'firebase-admin';
+// @ts-ignore
+import admin from 'firebase-admin';
 
+// @ts-ignore
 if (!admin.apps.length) {
   try {
+// @ts-ignore
     admin.initializeApp({
+// @ts-ignore
       credential: admin.credential.cert({
         projectId: process.env.FIREBASE_PROJECT_ID,
         clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
@@ -15,6 +19,7 @@ if (!admin.apps.length) {
   }
 }
 
+// @ts-ignore
 export const messaging = admin.messaging();
 
 export async function sendPushNotification(token: string, payload: { title: string, body: string, url?: string }) {
