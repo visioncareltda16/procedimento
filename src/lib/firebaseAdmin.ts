@@ -1,28 +1,29 @@
-// @ts-ignore
-import admin from 'firebase-admin';
+import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import { getMessaging } from 'firebase-admin/messaging';
 
-// @ts-ignore
-if (!admin.apps.length) {
+if (!getApps().length) {
   try {
-// @ts-ignore
-    admin.initializeApp({
-// @ts-ignore
-      credential: admin.credential.cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-        // The private key needs to have newlines properly formatted
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      }),
-    });
+    const serviceAccount = {
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+    };
+
+    if (serviceAccount.projectId && serviceAccount.privateKey) {
+      initializeApp({
+        credential: cert(serviceAccount),
+      });
+    }
   } catch (error) {
     console.error('Firebase admin initialization error', error);
   }
 }
 
-// @ts-ignore
-export const messaging = admin.messaging();
+export const messaging = getApps().length ? getMessaging() : null;
 
 export async function sendPushNotification(token: string, payload: { title: string, body: string, url?: string }) {
+  if (!messaging) return false;
+  
   try {
     const message = {
       notification: {
