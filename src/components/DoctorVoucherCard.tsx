@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Eye, Check, Calendar, MapPin, Undo2, ThumbsUp, Edit2, Trash2 } from 'lucide-react';
+import { User, Eye, Check, Calendar, MapPin, Undo2, ThumbsUp, Edit2, Trash2, Building } from 'lucide-react';
 import { markPatientAsCompleted, undoPatientCompletion, confirmPaciente } from '@/app/actions';
 
 export default function DoctorVoucherCard({ 
@@ -167,6 +167,9 @@ export default function DoctorVoucherCard({
         <div style={{ padding: '1rem', background: 'rgba(0,0,0,0.02)', borderRadius: '8px', border: '1px dashed var(--border-color)' }}>
           <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Eye size={16} color="var(--primary-color)" /> {paciente.procedimento}
+          </div>
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
+            <Building size={14} /> Clínica: {paciente.solicitingClinic?.nome || '-'}
           </div>
           {paciente.dataAgendamento ? (
             <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
