@@ -254,6 +254,7 @@ export default function DoctorVoucherCard({
           )}
           </div>
         </div>
+      </div>
 
       {isModalOpen && (
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>

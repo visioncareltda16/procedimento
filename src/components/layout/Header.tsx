@@ -63,7 +63,7 @@ export default function Header() {
       </div>
 
       <div className={styles.actions}>
-        <SessionTimer timeoutMinutes={sessionTimeoutMinutes} />
+        <SessionTimer timeoutMinutes={sessionTimeoutMinutes} userId={userId} />
 
         {mounted && (
           <button 

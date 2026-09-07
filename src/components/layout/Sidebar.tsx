@@ -48,7 +48,10 @@ export default function Sidebar({
       </nav>
 
       <div className={styles.footer}>
-        <button className={styles.logoutBtn} onClick={() => signOut({ callbackUrl: '/login' })}>
+        <button className={styles.logoutBtn} onClick={() => {
+          if (session?.user?.id) localStorage.removeItem(`app_session_expiry_${session.user.id}`);
+          signOut({ callbackUrl: '/login' });
+        }}>
           <LogOut size={20} />
           <span>Sair</span>
         </button>

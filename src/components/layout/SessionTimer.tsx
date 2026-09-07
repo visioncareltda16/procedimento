@@ -4,23 +4,43 @@ import { useState, useEffect, useCallback } from 'react';
 import { Clock } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 
-export default function SessionTimer({ timeoutMinutes }: { timeoutMinutes: number }) {
+export default function SessionTimer({ timeoutMinutes, userId }: { timeoutMinutes: number, userId?: string }) {
   const [timeLeft, setTimeLeft] = useState(timeoutMinutes * 60);
 
-
-
   useEffect(() => {
-    if (timeLeft <= 0) {
+    if (!userId) return; // Wait until userId is loaded
+
+    const SESSION_KEY = `app_session_expiry_${userId}`;
+    let expiry = localStorage.getItem(SESSION_KEY);
+
+    if (!expiry) {
+      // First time loading, set the expiry
+      expiry = (Date.now() + timeoutMinutes * 60 * 1000).toString();
+      localStorage.setItem(SESSION_KEY, expiry);
+    }
+
+    const expiryTime = parseInt(expiry, 10);
+    const initialRemaining = Math.max(0, Math.floor((expiryTime - Date.now()) / 1000));
+    setTimeLeft(initialRemaining);
+
+    if (initialRemaining <= 0) {
+      localStorage.removeItem(SESSION_KEY);
       signOut({ callbackUrl: '/login' });
       return;
     }
 
     const intervalId = setInterval(() => {
-      setTimeLeft(prev => prev - 1);
+      const remaining = Math.max(0, Math.floor((expiryTime - Date.now()) / 1000));
+      setTimeLeft(remaining);
+      if (remaining <= 0) {
+        clearInterval(intervalId);
+        localStorage.removeItem(SESSION_KEY);
+        signOut({ callbackUrl: '/login' });
+      }
     }, 1000);
 
     return () => clearInterval(intervalId);
-  }, [timeLeft]);
+  }, [timeoutMinutes, userId]);
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
