@@ -1,0 +1,179 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   @default("CAPTADOR") // ADMIN, MEDICO, CAPTADOR
+  status    String   @default("PENDING") // PENDING, APPROVED
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cancellations     CancellationLog[]
+  patientsRequested Patient[]         @relation("Requester")
+  notifications     Notification[]
+  userClinics       UserClinic[]
+  fcmTokens         FcmToken[]
+
+  executingDoctorId String?
+  executingDoctor   ExecutingDoctor? @relation(fields: [executingDoctorId], references: [id])
+}
+
+model SolicitingClinic {
+  id         String   @id @default(cuid())
+  nome       String
+  endereco   String?
+  cep        String?
+  contato    String?
+  observacao String?
+  createdAt  DateTime @default(now())
+
+  patients    Patient[]
+  userClinics UserClinic[]
+}
+
+model ExecutionLocation {
+  id         String   @id @default(cuid())
+  nome       String
+  endereco   String?
+  cep        String?
+  contato    String?
+  observacao String?
+  logoUrl    String?
+  createdAt  DateTime @default(now())
+
+  patients     Patient[]
+  locationFees LocationFee[]
+}
+
+model UserClinic {
+  id        String   @id @default(cuid())
+  userId    String
+  clinicId  String
+
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clinic    SolicitingClinic @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, clinicId])
+}
+
+model Patient {
+  id               String   @id @default(cuid())
+  nome             String
+  prontuario       String
+  lateralidade     String   @default("AO") // OD, OE, AO
+  procedimento     String
+  valor            String
+  status           String   @default("No Aguardo") // No Aguardo, Agendado, Cancelado
+  dataAgendamento  DateTime?
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  // Relações
+  requesterId      String?
+  requester        User?             @relation("Requester", fields: [requesterId], references: [id])
+
+  solicitingClinicId String?
+  solicitingClinic   SolicitingClinic? @relation(fields: [solicitingClinicId], references: [id])
+
+  executionLocationId String?
+  executionLocation   ExecutionLocation? @relation(fields: [executionLocationId], references: [id])
+
+  executingDoctorId   String?
+  executingDoctor     ExecutingDoctor?   @relation(fields: [executingDoctorId], references: [id])
+
+  cancellations CancellationLog[]
+}
+
+model Procedure {
+  id           String  @id @default(cuid())
+  name         String
+  price        String
+  sigla        String?
+  lateralidade String?
+
+  doctorRepasses DoctorRepasse[]
+  locationFees   LocationFee[]
+}
+
+model ExecutingDoctor {
+  id        String   @id @default(cuid())
+  nome      String
+  crm       String?
+  contato   String?
+  createdAt DateTime @default(now())
+
+  repasses  DoctorRepasse[]
+  patients  Patient[]
+  users     User[]
+}
+
+model DoctorRepasse {
+  id          String   @id @default(cuid())
+  doctorId    String
+  doctor      ExecutingDoctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  procedureId String
+  procedure   Procedure @relation(fields: [procedureId], references: [id], onDelete: Cascade)
+  valor       String
+
+  @@unique([doctorId, procedureId])
+}
+
+model LocationFee {
+  id          String   @id @default(cuid())
+  locationId  String
+  location    ExecutionLocation @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  procedureId String
+  procedure   Procedure @relation(fields: [procedureId], references: [id], onDelete: Cascade)
+  valor       String
+
+  @@unique([locationId, procedureId])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model CancellationLog {
+  id            String   @id @default(cuid())
+  justificativa String
+  createdAt     DateTime @default(now())
+
+  patientId String
+  patient   Patient @relation(fields: [patientId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model FcmToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  device    String?
+  createdAt DateTime @default(now())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+}

@@ -1,0 +1,105 @@
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.reportCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cardIcon {
+  width: 48px;
+  height: 48px;
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.card p {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+/* Print Area (Visible only when rendering PDF) */
+.printAreaWrapper {
+  position: absolute;
+  left: -9999px; /* Hide from screen but keep in DOM for html2pdf */
+  top: 0;
+}
+
+.printArea {
+  width: 800px; /* Fixed width for standard A4/Letter scaling */
+  background: white;
+  color: #111;
+  padding: 40px;
+  font-family: Arial, sans-serif;
+}
+
+.printHeader {
+  border-bottom: 2px solid #333;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.printHeader h2 {
+  color: #111;
+  margin-bottom: 10px;
+}
+
+.printTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.printTable th, .printTable td {
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left;
+  font-size: 12px;
+}
+
+.printTable th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.justificativaCol {
+  font-style: italic;
+  color: #444;
+}
+
+.printFooter {
+  margin-top: 50px;
+  text-align: center;
+  font-size: 10px;
+  color: #666;
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
