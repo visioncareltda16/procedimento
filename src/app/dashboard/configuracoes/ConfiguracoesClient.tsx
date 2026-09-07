@@ -10,6 +10,7 @@ import {
   approveUser, assignUserToClinic, removeUserFromClinic, createProvisionalUser, updateUser,
   generateProvisionalPassword, assignDoctorToUser, removeDoctorFromUser,
   createExecutingDoctor, deleteExecutingDoctor, updateExecutingDoctor,
+  assignLocationToDoctor, removeLocationFromDoctor,
   upsertDoctorRepasse, upsertLocationFee, getLocationFees,
   setSystemSetting
 } from '@/app/actions';
@@ -59,6 +60,7 @@ export default function ConfiguracoesClient({
 
   const [selectedClinic, setSelectedClinic] = useState('');
   const [selectedDoctor, setSelectedDoctor] = useState('');
+  const [selectedLocation, setSelectedLocation] = useState('');
 
   // Edit States
   const [editingLocId, setEditingLocId] = useState<string | null>(null);
@@ -543,7 +545,7 @@ export default function ConfiguracoesClient({
             </form>
             <div className={styles.tableContainer}>
               <table className={styles.table}>
-                <thead><tr><th>Nome</th><th>CRM</th><th>Contato</th><th>Regras de Repasse</th><th>Ações</th></tr></thead>
+                <thead><tr><th>Nome</th><th>CRM</th><th>Contato</th><th>Locais Autorizados</th><th>Regras de Repasse</th><th>Ações</th></tr></thead>
                 <tbody>
                   {initialDoctors?.map(d => (
                     <tr key={d.id} onDoubleClick={() => startEditDoc(d)}>
@@ -552,6 +554,7 @@ export default function ConfiguracoesClient({
                           <td><input type="text" className="form-input" style={{padding:'0.4rem', fontSize:'0.85rem'}} value={editDocData.nome} onChange={e => setEditDocData({...editDocData, nome: e.target.value})} /></td>
                           <td><input type="text" className="form-input" style={{padding:'0.4rem', fontSize:'0.85rem'}} value={editDocData.crm || ''} onChange={e => setEditDocData({...editDocData, crm: e.target.value})} /></td>
                           <td><input type="text" className="form-input" style={{padding:'0.4rem', fontSize:'0.85rem'}} value={editDocData.contato || ''} onChange={e => setEditDocData({...editDocData, contato: e.target.value})} /></td>
+                          <td>-</td>
                           <td>-</td>
                           <td style={{ display: 'flex', gap: '0.25rem' }}>
                             <button className={styles.actionBtn} style={{color: 'var(--success-color)', background: 'rgba(16, 185, 129, 0.1)'}} onClick={saveEditDoc}><Save size={18} /></button>
@@ -563,6 +566,25 @@ export default function ConfiguracoesClient({
                           <td>{d.nome}</td>
                           <td>{d.crm}</td>
                           <td>{d.contato}</td>
+                          <td>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                              {d.executionLocations?.map((dl: any) => (
+                                <div key={dl.locationId} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem' }}>
+                                  <MapPin size={14} /> {dl.location?.nome}
+                                  <button style={{ background: 'none', border: 'none', color: 'var(--danger-color)', cursor: 'pointer' }} onClick={() => removeLocationFromDoctor(d.id, dl.locationId)}><X size={14}/></button>
+                                </div>
+                              ))}
+                              <div style={{ display: 'flex', gap: '0.25rem' }}>
+                                <select className="form-select" style={{ padding: '0.25rem', fontSize: '0.8rem', height: 'auto' }} value={selectedLocation} onChange={e => setSelectedLocation(e.target.value)}>
+                                  <option value="">+ Vincular Local...</option>
+                                  {initialLocations.map(loc => <option key={loc.id} value={loc.id}>{loc.nome}</option>)}
+                                </select>
+                                <button className="btn btn-outline" style={{ padding: '0.25rem' }} onClick={() => { if(selectedLocation) assignLocationToDoctor(d.id, selectedLocation); setSelectedLocation(''); }}>
+                                  <Check size={14}/>
+                                </button>
+                              </div>
+                            </div>
+                          </td>
                           <td>
                             <button className="btn btn-outline" style={{ padding: '0.25rem 0.5rem', fontSize: '0.75rem' }} onClick={() => {
                               setActiveDoctorId(d.id);
@@ -581,7 +603,7 @@ export default function ConfiguracoesClient({
                       )}
                     </tr>
                   ))}
-                  {initialDoctors?.length === 0 && <tr><td colSpan={5} style={{ textAlign: 'center' }}>Nenhum médico cadastrado.</td></tr>}
+                  {initialDoctors?.length === 0 && <tr><td colSpan={6} style={{ textAlign: 'center' }}>Nenhum médico cadastrado.</td></tr>}
                 </tbody>
               </table>
             </div>

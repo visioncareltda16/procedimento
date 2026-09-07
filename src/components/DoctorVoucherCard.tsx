@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { User, Eye, Check, Calendar, MapPin, Undo2 } from 'lucide-react';
-import { markPatientAsCompleted, undoPatientCompletion } from '@/app/actions';
+import { markPatientAsCompleted, undoPatientCompletion, confirmPaciente } from '@/app/actions';
 
 export default function DoctorVoucherCard({ 
   paciente, 
@@ -62,6 +62,15 @@ export default function DoctorVoucherCard({
     }
   };
 
+  const handleConfirm = async () => {
+    try {
+      await confirmPaciente(paciente.id);
+      onUpdate();
+    } catch (err) {
+      alert("Erro ao confirmar paciente.");
+    }
+  };
+
   return (
     <>
       <div style={{
@@ -104,6 +113,20 @@ export default function DoctorVoucherCard({
             NO AGUARDO
           </div>
         )}
+        {!isCompleted && !isWaiting && (
+          <div style={{
+            position: 'absolute',
+            top: 0, right: 0,
+            background: paciente.pacienteConfirmado ? 'var(--success-color)' : 'var(--warning-color)',
+            color: '#fff',
+            padding: '0.2rem 1rem',
+            borderBottomLeftRadius: '12px',
+            fontSize: '0.75rem',
+            fontWeight: 'bold'
+          }}>
+            {paciente.pacienteConfirmado ? 'CONFIRMADO' : 'PENDENTE DE CONFIRMAÇÃO'}
+          </div>
+        )}
 
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
@@ -141,25 +164,43 @@ export default function DoctorVoucherCard({
           )}
         </div>
 
-        <div style={{ marginTop: 'auto', display: 'flex', gap: '0.5rem' }}>
+        <div style={{ marginTop: 'auto', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {isWaiting && (
             <button 
               className="btn btn-primary" 
-              style={{ flex: 1, display: 'flex', justifyContent: 'center' }}
+              style={{ flex: 1, minWidth: '120px', display: 'flex', justifyContent: 'center' }}
               onClick={onSchedule}
             >
-              <Calendar size={18} /> Agendar Data/Local
+              <Calendar size={18} /> Agendar
             </button>
           )}
 
           {!isCompleted && paciente.status === 'Agendado' && (
-            <button 
-              className="btn btn-primary" 
-              style={{ flex: 1, display: 'flex', justifyContent: 'center', background: 'var(--success-color)' }}
-              onClick={() => setIsModalOpen(true)}
-            >
-              <Check size={18} /> Dar Baixa (Realizado)
-            </button>
+            <>
+              {!paciente.pacienteConfirmado && (
+                <button 
+                  className="btn btn-outline" 
+                  style={{ flex: 1, minWidth: '120px', display: 'flex', justifyContent: 'center', color: 'var(--success-color)', borderColor: 'var(--success-color)' }}
+                  onClick={handleConfirm}
+                >
+                  <Check size={18} /> Confirmar
+                </button>
+              )}
+              <button 
+                className="btn btn-outline" 
+                style={{ flex: 1, minWidth: '120px', display: 'flex', justifyContent: 'center', color: 'var(--warning-color)', borderColor: 'var(--warning-color)' }}
+                onClick={onSchedule}
+              >
+                <MapPin size={18} /> Reagendar
+              </button>
+              <button 
+                className="btn btn-primary" 
+                style={{ flex: 1, minWidth: '120px', display: 'flex', justifyContent: 'center', background: 'var(--success-color)' }}
+                onClick={() => setIsModalOpen(true)}
+              >
+                <Check size={18} /> Baixa
+              </button>
+            </>
           )}
 
           {canUndo && (

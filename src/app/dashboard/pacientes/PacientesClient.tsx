@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Search, Plus, Trash2, X, MapPin, Edit2, Check } from 'lucide-react';
 import styles from './Pacientes.module.css';
-import { createPatient, cancelPatient, schedulePatient, updatePatient, markPatientAsCompleted } from '@/app/actions';
+import { createPatient, cancelPatient, schedulePatient, updatePatient, markPatientAsCompleted, confirmPaciente } from '@/app/actions';
 import DoctorVoucherCard from '@/components/DoctorVoucherCard';
 import { useRouter } from 'next/navigation';
 
@@ -94,6 +94,14 @@ export default function PacientesClient({
     }
   };
 
+  const handleConfirm = async (id: string) => {
+    try {
+      await confirmPaciente(id);
+    } catch (err) {
+      alert("Erro ao confirmar paciente.");
+    }
+  };
+
   const saveEditPatient = async () => {
     if (!editingPatientId) return;
     try {
@@ -111,12 +119,16 @@ export default function PacientesClient({
     setSenha('');
   };
 
-  const openScheduleModal = (id: string) => {
-    setSelectedPacienteId(id);
+  const openScheduleModal = (paciente: any) => {
+    setSelectedPacienteId(paciente.id);
     setIsScheduleModalOpen(true);
-    setScheduleLocalId('');
-    setScheduleDoctorId('');
-    setScheduleData('');
+    setScheduleLocalId(paciente.executionLocationId || '');
+    setScheduleDoctorId(paciente.executingDoctorId || '');
+    if (paciente.dataAgendamento) {
+      setScheduleData(new Date(paciente.dataAgendamento).toISOString().split('T')[0]);
+    } else {
+      setScheduleData('');
+    }
   };
 
   const handleDelete = async (e: React.FormEvent) => {
@@ -186,6 +198,11 @@ export default function PacientesClient({
 
   const canApprove = currentUserRole === 'ADMIN' || currentUserRole === 'MEDICO';
 
+  const filteredLocations = scheduleDoctorId ? locations.filter((loc: any) => {
+    const doc = doctors.find((d: any) => d.id === scheduleDoctorId);
+    return doc?.executionLocations?.some((dl: any) => dl.locationId === loc.id);
+  }) : locations;
+
   return (
     <div className="animate-fade-in">
       <div className={styles.header}>
@@ -238,7 +255,7 @@ export default function PacientesClient({
               currentUserId={currentUserId} 
               isAdmin={false}
               onUpdate={() => router.refresh()}
-              onSchedule={() => openScheduleModal(paciente.id)}
+              onSchedule={() => openScheduleModal(paciente)}
             />
           ))}
           {filteredPacientes.length === 0 && (
@@ -363,6 +380,11 @@ export default function PacientesClient({
                       }`}>
                         {paciente.status}
                       </span>
+                      {paciente.status === 'Agendado' && (
+                        <div style={{ marginTop: '0.25rem', fontSize: '0.75rem', fontWeight: 600, color: paciente.pacienteConfirmado ? 'var(--success-color)' : 'var(--warning-color)' }}>
+                          {paciente.pacienteConfirmado ? '✓ Confirmado' : '⚠ Pendente de Confirmação'}
+                        </div>
+                      )}
                     </td>
                     <td>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -371,13 +393,25 @@ export default function PacientesClient({
                             <Edit2 size={18} />
                           </button>
                         )}
+                        {paciente.status === 'Agendado' && (
+                          <>
+                            {!paciente.pacienteConfirmado && (
+                              <button className={styles.actionBtn} style={{ color: 'var(--success-color)', background: 'rgba(16, 185, 129, 0.1)' }} title="Confirmar Presença do Paciente" onClick={() => handleConfirm(paciente.id)}>
+                                <Check size={18} />
+                              </button>
+                            )}
+                            <button className={styles.actionBtn} style={{ color: 'var(--warning-color)', background: 'rgba(245, 158, 11, 0.1)' }} title="Reagendar" onClick={() => openScheduleModal(paciente)}>
+                              <MapPin size={18} />
+                            </button>
+                          </>
+                        )}
                         {paciente.status === 'Agendado' && (currentUserRole === 'ADMIN' || currentUserRole === 'MEDICO') && (
                           <button className={styles.actionBtn} style={{ color: 'var(--success-color)', background: 'rgba(16, 185, 129, 0.1)' }} title="Marcar como Realizado" onClick={() => handleMarkCompleted(paciente.id)}>
                             <Check size={18} />
                           </button>
                         )}
                         {paciente.status === 'No Aguardo' && canApprove && (
-                          <button className={styles.actionBtn} style={{ color: 'var(--primary-color)', background: 'rgba(59, 130, 246, 0.1)' }} title="Agendar Local" onClick={() => openScheduleModal(paciente.id)}>
+                          <button className={styles.actionBtn} style={{ color: 'var(--primary-color)', background: 'rgba(59, 130, 246, 0.1)' }} title="Agendar Local" onClick={() => openScheduleModal(paciente)}>
                             <MapPin size={18} />
                           </button>
                         )}
@@ -413,7 +447,7 @@ export default function PacientesClient({
                 <label className="form-label">Local de Execução</label>
                 <select className="form-select" required value={scheduleLocalId} onChange={(e) => setScheduleLocalId(e.target.value)}>
                   <option value="">Selecione o local...</option>
-                  {locations.map((loc: any) => (
+                  {filteredLocations.map((loc: any) => (
                     <option key={loc.id} value={loc.id}>{loc.nome}</option>
                   ))}
                 </select>
