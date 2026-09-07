@@ -1,13 +1,3 @@
-.header {
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 2rem;
-  margin-bottom: 2rem;
-  width: 100%;
-}
-
 .titleContainer {
   display: flex;
   flex-direction: column;
@@ -79,6 +69,47 @@
   z-index: 9999;
   overflow: hidden;
   animation: fadeIn 0.2s ease;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mobileMenuBtn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+@media (max-width: 768px) {
+  .mobileMenuBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .pageSubtitle {
+    display: none;
+  }
+  
+  .header {
+    padding: 1rem;
+  }
 }
 
 .notificationsHeader {

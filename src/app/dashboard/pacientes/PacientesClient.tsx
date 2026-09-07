@@ -249,6 +249,7 @@ export default function PacientesClient({
         </div>
       ) : (
         <div className={`glass-panel ${styles.tableContainer}`}>
+      <div className="table-responsive">
         <table className={styles.table}>
           <thead>
             <tr>
@@ -396,6 +397,7 @@ export default function PacientesClient({
             )}
           </tbody>
         </table>
+      </div>
       </div>
       )}
 

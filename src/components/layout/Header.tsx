@@ -2,13 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
-import { Bell, User, Sun, Moon, Clock, Check, X } from 'lucide-react';
+import { Bell, User, Sun, Moon, Check, Menu } from 'lucide-react';
 import styles from './Header.module.css';
 import { getNotifications, markNotificationAsRead, markAllNotificationsAsRead, getSystemSetting } from '@/app/actions';
 import { useSession } from 'next-auth/react';
 import SessionTimer from './SessionTimer';
 
-export default function Header() {
+interface HeaderProps {
+  onMenuToggle?: () => void;
+}
+
+export default function Header({ onMenuToggle }: HeaderProps) {
   const { theme, setTheme } = useTheme();
   const { data: session } = useSession();
   const [mounted, setMounted] = useState(false);
@@ -55,9 +59,14 @@ export default function Header() {
 
   return (
     <header className={`${styles.header} glass-panel`}>
-      <div className={styles.titleContainer}>
-        <h1 className={styles.pageTitle}>Solicitações</h1>
-        <p className={styles.pageSubtitle}>Hub de procedimentos médicos Vision Care</p>
+      <div className={styles.titleGroup}>
+        <button className={styles.mobileMenuBtn} onClick={onMenuToggle}>
+          <Menu size={24} />
+        </button>
+        <div className={styles.titleContainer}>
+          <h1 className={styles.pageTitle}>Solicitações</h1>
+          <p className={styles.pageSubtitle}>Hub de procedimentos médicos Vision Care</p>
+        </div>
       </div>
 
       <div className={styles.actions}>
