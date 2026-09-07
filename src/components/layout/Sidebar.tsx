@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Home, Users, FileText, Settings, LogOut } from 'lucide-react';
 import styles from './Sidebar.module.css';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { usePathname } from 'next/navigation';
 
 export default function Sidebar({ 
@@ -12,6 +12,7 @@ export default function Sidebar({
   userRole?: string
 }) {
   const pathname = usePathname();
+  const { data: session } = useSession();
   
   return (
     <aside className={`${styles.sidebar} glass-panel`}>
