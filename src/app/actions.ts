@@ -131,7 +131,7 @@ export async function schedulePatient(patientId: string, executionLocationId: st
     data: { 
       executionLocationId, 
       executingDoctorId,
-      dataAgendamento: new Date(dataAgendamentoStr),
+      dataAgendamento: new Date(dataAgendamentoStr + 'T12:00:00Z'),
       status: 'Agendado' 
     },
     include: { executionLocation: true, solicitingClinic: true, executingDoctor: true }
