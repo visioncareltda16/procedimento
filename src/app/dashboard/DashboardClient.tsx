@@ -98,39 +98,6 @@ export default function DashboardClient({ stats, patients }: { stats: any, patie
         )}
         </div>
 
-        {/* PACIENTES AGENDADOS POR MÉDICO */}
-        <div className="glass-panel" style={{ padding: '1.5rem' }}>
-          <h3 className={styles.chartTitle} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-            <User size={20} color="var(--primary-color)" /> Pacientes Agendados por Médico
-          </h3>
-        
-        {Object.keys(scheduledByDoctor).length > 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {Object.keys(scheduledByDoctor).map(docName => (
-              <div key={docName}>
-                <h4 style={{ marginBottom: '0.75rem', color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.25rem' }}>{docName}</h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
-                  {scheduledByDoctor[docName].map(pac => (
-                    <div key={pac.id} style={{ padding: '1rem', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-                      <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
-                        {pac.nome}
-                      </div>
-                      <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                        <strong>Procedimento:</strong> {pac.procedimento} ({pac.lateralidade})<br/>
-                        <strong>Data:</strong> {pac.dataAgendamento ? new Date(pac.dataAgendamento).toLocaleDateString('pt-BR') : 'Não definida'}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p style={{ color: 'var(--text-secondary)', fontStyle: 'italic' }}>Nenhum paciente agendado.</p>
-        )}
-          </div>
-        </div>
-
         {/* RIGHT COLUMN */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           
@@ -159,7 +126,39 @@ export default function DashboardClient({ stats, patients }: { stats: any, patie
             <p style={{ color: 'var(--text-secondary)', fontStyle: 'italic' }}>Nenhum procedimento realizado.</p>
           )}
         </div>
+        </div>
       </div>
+
+      {/* FULL WIDTH - PACIENTES AGENDADOS POR MÉDICO */}
+      <div className="glass-panel" style={{ padding: '1.5rem', marginBottom: '1.5rem' }}>
+        <h3 className={styles.chartTitle} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+          <User size={20} color="var(--primary-color)" /> Pacientes Agendados por Médico
+        </h3>
+      
+      {Object.keys(scheduledByDoctor).length > 0 ? (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '1.5rem' }}>
+          {Object.keys(scheduledByDoctor).map(docName => (
+            <div key={docName}>
+              <h4 style={{ marginBottom: '0.75rem', color: 'var(--text-primary)', borderBottom: '1px solid var(--border-color)', paddingBottom: '0.25rem' }}>{docName}</h4>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '1rem' }}>
+                {scheduledByDoctor[docName].map(pac => (
+                  <div key={pac.id} style={{ padding: '1rem', background: 'var(--bg-secondary)', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+                    <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.25rem' }}>
+                      {pac.nome}
+                    </div>
+                    <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                      <strong>Procedimento:</strong> {pac.procedimento} ({pac.lateralidade})<br/>
+                      <strong>Data:</strong> {pac.dataAgendamento ? new Date(pac.dataAgendamento).toLocaleDateString('pt-BR') : 'Não definida'}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p style={{ color: 'var(--text-secondary)', fontStyle: 'italic' }}>Nenhum paciente agendado.</p>
+      )}
       </div>
 
       <div className={styles.chartsGrid}>

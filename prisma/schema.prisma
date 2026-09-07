@@ -53,6 +53,7 @@ model ExecutionLocation {
 
   patients     Patient[]
   locationFees LocationFee[]
+  doctorLocations DoctorExecutionLocation[]
 }
 
 model UserClinic {
@@ -75,6 +76,7 @@ model Patient {
   valor            String
   status           String   @default("No Aguardo") // No Aguardo, Agendado, Cancelado
   dataAgendamento  DateTime?
+  pacienteConfirmado Boolean @default(false)
   
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
@@ -116,6 +118,17 @@ model ExecutingDoctor {
   repasses  DoctorRepasse[]
   patients  Patient[]
   users     User[]
+  executionLocations DoctorExecutionLocation[]
+}
+
+model DoctorExecutionLocation {
+  id          String   @id @default(cuid())
+  doctorId    String
+  doctor      ExecutingDoctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  locationId  String
+  location    ExecutionLocation @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@unique([doctorId, locationId])
 }
 
 model DoctorRepasse {

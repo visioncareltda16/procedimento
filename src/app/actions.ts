@@ -88,7 +88,7 @@ export async function updatePatient(id: string, data: { nome: string, prontuario
     updateData.executionLocationId = data.executionLocationId || null;
   }
   if (data.dataAgendamento !== undefined) {
-    updateData.dataAgendamento = data.dataAgendamento ? new Date(data.dataAgendamento) : null;
+    updateData.dataAgendamento = data.dataAgendamento ? new Date(data.dataAgendamento + 'T12:00:00Z') : null;
   }
   
   const currentPatient = await prisma.patient.findUnique({ where: { id } });
