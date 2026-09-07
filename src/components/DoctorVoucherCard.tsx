@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Eye, Check, Calendar, MapPin, Undo2 } from 'lucide-react';
+import { User, Eye, Check, Calendar, MapPin, Undo2, ThumbsUp } from 'lucide-react';
 import { markPatientAsCompleted, undoPatientCompletion, confirmPaciente } from '@/app/actions';
 
 export default function DoctorVoucherCard({ 
@@ -183,7 +183,7 @@ export default function DoctorVoucherCard({
                   style={{ flex: 1, minWidth: '120px', display: 'flex', justifyContent: 'center', color: 'var(--success-color)', borderColor: 'var(--success-color)' }}
                   onClick={handleConfirm}
                 >
-                  <Check size={18} /> Confirmar
+                  <ThumbsUp size={18} /> Confirmar
                 </button>
               )}
               <button 

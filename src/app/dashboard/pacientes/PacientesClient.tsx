@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Plus, Trash2, X, MapPin, Edit2, Check } from 'lucide-react';
+import { Search, Plus, Trash2, X, MapPin, Edit2, Check, ThumbsUp } from 'lucide-react';
 import styles from './Pacientes.module.css';
 import { createPatient, cancelPatient, schedulePatient, updatePatient, markPatientAsCompleted, confirmPaciente } from '@/app/actions';
 import DoctorVoucherCard from '@/components/DoctorVoucherCard';
@@ -397,7 +397,7 @@ export default function PacientesClient({
                           <>
                             {!paciente.pacienteConfirmado && (
                               <button className={styles.actionBtn} style={{ color: 'var(--success-color)', background: 'rgba(16, 185, 129, 0.1)' }} title="Confirmar Presença do Paciente" onClick={() => handleConfirm(paciente.id)}>
-                                <Check size={18} />
+                                <ThumbsUp size={18} />
                               </button>
                             )}
                             <button className={styles.actionBtn} style={{ color: 'var(--warning-color)', background: 'rgba(245, 158, 11, 0.1)' }} title="Reagendar" onClick={() => openScheduleModal(paciente)}>
