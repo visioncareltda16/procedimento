@@ -20,8 +20,7 @@ export async function GET(request: Request) {
         name: 'Administrador Vercel',
         email: 'admin@vision.com',
         password: hashedPassword,
-        role: 'ADMIN',
-        active: true
+        role: 'ADMIN'
       }
     });
 
