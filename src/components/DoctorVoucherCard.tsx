@@ -146,7 +146,7 @@ export default function DoctorVoucherCard({
           </div>
           {paciente.dataAgendamento ? (
             <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
-              <Calendar size={14} /> {new Date(paciente.dataAgendamento).toLocaleDateString()}
+              <Calendar size={14} /> {new Date(paciente.dataAgendamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
             </div>
           ) : (
              <div style={{ fontSize: '0.85rem', color: 'var(--danger-color)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>

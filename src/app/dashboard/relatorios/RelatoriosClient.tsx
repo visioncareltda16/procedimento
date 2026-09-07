@@ -157,7 +157,7 @@ export default function RelatoriosClient({ initialData }: { initialData: any }) 
                 filteredRealizados.length > 0 ? (
                   filteredRealizados.map((item: any) => (
                     <tr key={item.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                      <td style={{ padding: '0.75rem' }}>{item.dataAgendamento ? new Date(item.dataAgendamento).toLocaleDateString('pt-BR') : '-'}</td>
+                      <td style={{ padding: '0.75rem' }}>{item.dataAgendamento ? new Date(item.dataAgendamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' }) : '-'}</td>
                       <td style={{ padding: '0.75rem' }}><strong>{item.nome}</strong><br/><span style={{ fontSize:'0.8rem', color:'#666' }}>Pront: {item.prontuario}</span></td>
                       <td style={{ padding: '0.75rem' }}>{item.procedimento} ({item.lateralidade})</td>
                       <td style={{ padding: '0.75rem' }}>

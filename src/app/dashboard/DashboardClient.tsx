@@ -149,7 +149,7 @@ export default function DashboardClient({ stats, patients }: { stats: any, patie
                     </div>
                     <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
                       <strong>Procedimento:</strong> {pac.procedimento} ({pac.lateralidade})<br/>
-                      <strong>Data:</strong> {pac.dataAgendamento ? new Date(pac.dataAgendamento).toLocaleDateString('pt-BR') : 'Não definida'}
+                      <strong>Data:</strong> {pac.dataAgendamento ? new Date(pac.dataAgendamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' }) : 'Não definida'}
                     </div>
                   </div>
                 ))}

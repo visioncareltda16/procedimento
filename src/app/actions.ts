@@ -157,7 +157,7 @@ export async function schedulePatient(patientId: string, executionLocationId: st
       await prisma.notification.create({
         data: {
           userId: cid,
-          message: `Agendado! O paciente ${patient.nome} realizará o procedimento na ${patient.executionLocation?.nome} dia ${new Date(dataAgendamentoStr).toLocaleDateString()}.`
+          message: `Agendado! O paciente ${patient.nome} realizará o procedimento na ${patient.executionLocation?.nome} dia ${new Date(dataAgendamentoStr).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}.`
         }
       });
     }

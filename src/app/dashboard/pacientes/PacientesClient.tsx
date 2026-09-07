@@ -369,7 +369,7 @@ export default function PacientesClient({
                         <div style={{fontSize: '0.85rem'}}>
                           <strong>{paciente.executionLocation.nome}</strong><br/>
                           {paciente.executingDoctor?.nome && <span style={{color: 'var(--text-secondary)'}}>Médico: {paciente.executingDoctor.nome}<br/></span>}
-                          <small>{new Date(paciente.dataAgendamento).toLocaleDateString()}</small>
+                          <small>{new Date(paciente.dataAgendamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</small>
                         </div>
                       ) : '-'}
                     </td>
