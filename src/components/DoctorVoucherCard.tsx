@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { User, Eye, Check, Calendar, MapPin, Undo2, ThumbsUp } from 'lucide-react';
+import { User, Eye, Check, Calendar, MapPin, Undo2, ThumbsUp, Edit2, Trash2 } from 'lucide-react';
 import { markPatientAsCompleted, undoPatientCompletion, confirmPaciente } from '@/app/actions';
 
 export default function DoctorVoucherCard({ 
@@ -12,8 +12,20 @@ export default function DoctorVoucherCard({
   paciente: any, 
   currentUserId: string,
   isAdmin: boolean,
+  onUpdate,
+  onSchedule,
+  onEdit,
+  onDelete,
+  canApprove = true
+}: { 
+  paciente: any, 
+  currentUserId: string,
+  isAdmin: boolean,
   onUpdate: () => void,
-  onSchedule: () => void
+  onSchedule: () => void,
+  onEdit?: () => void,
+  onDelete?: () => void,
+  canApprove?: boolean
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [senha, setSenha] = useState('');
@@ -135,8 +147,20 @@ export default function DoctorVoucherCard({
             </h3>
             <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Prontuário: #{paciente.prontuario}</span>
           </div>
-          <div style={{ background: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary-color)', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600 }}>
-            {paciente.lateralidade}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            {onEdit && (
+              <button className="btn-icon" onClick={onEdit} title="Editar" style={{ padding: '0.3rem' }}>
+                <Edit2 size={16} />
+              </button>
+            )}
+            {onDelete && (
+              <button className="btn-icon delete" onClick={onDelete} title="Excluir" style={{ padding: '0.3rem' }}>
+                <Trash2 size={16} />
+              </button>
+            )}
+            <div style={{ background: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary-color)', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600 }}>
+              {paciente.lateralidade}
+            </div>
           </div>
         </div>
 
@@ -193,13 +217,15 @@ export default function DoctorVoucherCard({
               >
                 <MapPin size={18} /> Reagendar
               </button>
-              <button 
-                className="btn btn-primary" 
-                style={{ flex: 1, minWidth: '120px', display: 'flex', justifyContent: 'center', background: 'var(--success-color)' }}
-                onClick={() => setIsModalOpen(true)}
-              >
-                <Check size={18} /> Baixa
-              </button>
+              {canApprove && (
+                <button 
+                  className="btn btn-primary" 
+                  style={{ flex: 1, minWidth: '120px', display: 'flex', justifyContent: 'center', background: 'var(--success-color)' }}
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  <Check size={18} /> Baixa
+                </button>
+              )}
             </>
           )}
 

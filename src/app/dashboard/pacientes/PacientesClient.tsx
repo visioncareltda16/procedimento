@@ -246,193 +246,101 @@ export default function PacientesClient({
         </button>
       </div>
 
-      {currentUserRole?.toUpperCase() === 'MEDICO' ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
-          {filteredPacientes.map(paciente => (
-            <DoctorVoucherCard 
-              key={paciente.id} 
-              paciente={paciente} 
-              currentUserId={currentUserId} 
-              isAdmin={false}
-              onUpdate={() => router.refresh()}
-              onSchedule={() => openScheduleModal(paciente)}
-            />
-          ))}
-          {filteredPacientes.length === 0 && (
-            <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
-              Nenhum paciente encontrado para os filtros selecionados.
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
+        {filteredPacientes.map(paciente => (
+          <DoctorVoucherCard 
+            key={paciente.id} 
+            paciente={paciente} 
+            currentUserId={currentUserId} 
+            isAdmin={currentUserRole?.toUpperCase() === 'ADMIN'}
+            onUpdate={() => router.refresh()}
+            onSchedule={() => openScheduleModal(paciente)}
+            onEdit={paciente.status !== 'Cancelado' && currentUserRole?.toUpperCase() !== 'MEDICO' ? () => startEditPatient(paciente) : undefined}
+            onDelete={paciente.status !== 'Cancelado' && currentUserRole?.toUpperCase() !== 'MEDICO' ? () => openDeleteModal(paciente.id) : undefined}
+            canApprove={canApprove}
+          />
+        ))}
+        {filteredPacientes.length === 0 && (
+          <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}>
+            Nenhum paciente encontrado para os filtros selecionados.
+          </div>
+        )}
+      </div>
+
+      {editingPatientId !== null && (
+        <div className={styles.modalOverlay}>
+          <div className={`glass-panel ${styles.modal}`} style={{ maxHeight: '90vh', overflowY: 'auto' }}>
+            <div className={styles.modalHeader}>
+              <h3>Editar Paciente</h3>
+              <button className={styles.closeBtn} onClick={() => setEditingPatientId(null)}><X size={20} /></button>
             </div>
-          )}
+            <form className={styles.modalBody} onSubmit={(e) => { e.preventDefault(); saveEditPatient(); }}>
+              <div className="form-group">
+                <label className="form-label">Nome Completo</label>
+                <input type="text" className="form-input" required value={editPatientData.nome || ''} onChange={e => setEditPatientData({...editPatientData, nome: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Prontuário</label>
+                <input type="text" className="form-input" required value={editPatientData.prontuario || ''} onChange={e => setEditPatientData({...editPatientData, prontuario: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Lateralidade</label>
+                <select className="form-select" required value={editPatientData.lateralidade || ''} onChange={e => setEditPatientData({...editPatientData, lateralidade: e.target.value})}>
+                  <option value="OD">Olho Direito (OD)</option>
+                  <option value="OE">Olho Esquerdo (OE)</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Procedimento</label>
+                <select className="form-select" required value={editPatientData.procedimento || ''} onChange={e => {
+                  const selProc = procedures.find((x: any) => x.name === e.target.value);
+                  setEditPatientData({
+                    ...editPatientData, 
+                    procedimento: e.target.value,
+                    valor: selProc ? selProc.price : editPatientData.valor
+                  });
+                }}>
+                  <option value="">Selecione o procedimento...</option>
+                  {procedures.map((p: any) => <option key={p.id} value={p.name}>{p.name}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Valor</label>
+                <input type="text" className="form-input" required value={editPatientData.valor || ''} onChange={e => setEditPatientData({...editPatientData, valor: e.target.value})} />
+              </div>
+              <div className="form-group">
+                <label className="form-label">Clínica Solicitante</label>
+                <select className="form-select" value={editPatientData.solicitingClinicId || ''} onChange={e => setEditPatientData({...editPatientData, solicitingClinicId: e.target.value})}>
+                  <option value="">Nenhuma</option>
+                  {clinics.map((c: any) => <option key={c.id} value={c.id}>{c.nome}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Médico Executor</label>
+                <select className="form-select" value={editPatientData.executingDoctorId || ''} onChange={e => setEditPatientData({...editPatientData, executingDoctorId: e.target.value})}>
+                  <option value="">Selecione Médico...</option>
+                  {doctors.map((d: any) => <option key={d.id} value={d.id}>{d.nome}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Local de Execução</label>
+                <select className="form-select" value={editPatientData.executionLocationId || ''} onChange={e => setEditPatientData({...editPatientData, executionLocationId: e.target.value})}>
+                  <option value="">Selecione Local...</option>
+                  {locations.map((l: any) => <option key={l.id} value={l.id}>{l.nome}</option>)}
+                </select>
+              </div>
+              <div className="form-group">
+                <label className="form-label">Data Agendamento</label>
+                <input type="date" className="form-input" value={editPatientData.dataAgendamento || ''} onChange={e => setEditPatientData({...editPatientData, dataAgendamento: e.target.value})} />
+              </div>
+              
+              <div className={styles.modalFooter}>
+                <button type="button" className="btn btn-outline" onClick={() => setEditingPatientId(null)}>Cancelar</button>
+                <button type="submit" className="btn btn-primary">Salvar Alterações</button>
+              </div>
+            </form>
+          </div>
         </div>
-      ) : (
-        <div className={`glass-panel ${styles.tableContainer}`}>
-      <div className="table-responsive">
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Paciente</th>
-              <th>Prontuário</th>
-              <th>Lado</th>
-              <th>Procedimento</th>
-              <th>Clínica Solicitante</th>
-              <th>Local / Médico</th>
-              <th>Status</th>
-              <th>Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredPacientes.map((paciente) => (
-              <tr key={paciente.id} onDoubleClick={() => {
-                if (paciente.status !== 'Cancelado') {
-                  startEditPatient(paciente);
-                }
-              }}>
-                {editingPatientId === paciente.id ? (
-                  <>
-                    <td>
-                      <input type="text" className="form-input" style={{padding:'0.4rem', fontSize:'0.85rem'}} value={editPatientData.nome} onChange={e => setEditPatientData({...editPatientData, nome: e.target.value})} disabled={currentUserRole === 'MEDICO'} />
-                    </td>
-                    <td>
-                      <input type="text" className="form-input" style={{padding:'0.4rem', fontSize:'0.85rem'}} value={editPatientData.prontuario} onChange={e => setEditPatientData({...editPatientData, prontuario: e.target.value})} disabled={currentUserRole === 'MEDICO'} />
-                    </td>
-                    <td>
-                      <select className="form-select" style={{padding:'0.4rem', fontSize:'0.85rem'}} value={editPatientData.lateralidade} onChange={e => setEditPatientData({...editPatientData, lateralidade: e.target.value})} disabled={currentUserRole === 'MEDICO'}>
-                        <option value="OD">OD</option>
-                        <option value="OE">OE</option>
-                      </select>
-                    </td>
-                    <td>
-                      <select className="form-select" style={{padding:'0.4rem', fontSize:'0.85rem'}} value={editPatientData.procedimento} onChange={e => {
-                        const selProc = procedures.find(x => x.name === e.target.value);
-                        setEditPatientData({
-                          ...editPatientData, 
-                          procedimento: e.target.value,
-                          valor: selProc ? selProc.price : editPatientData.valor
-                        });
-                      }} disabled={currentUserRole === 'MEDICO'}>
-                        <option value="">Selecione...</option>
-                        {procedures.map((proc: any) => (
-                          <option key={proc.id} value={proc.name}>{proc.name}</option>
-                        ))}
-                      </select>
-                      <input type="text" className="form-input" style={{padding:'0.4rem', fontSize:'0.85rem', marginTop: '4px'}} value={editPatientData.valor} onChange={e => setEditPatientData({...editPatientData, valor: e.target.value})} disabled={currentUserRole !== 'ADMIN'} />
-                    </td>
-                    <td>
-                      <select className="form-select" style={{padding:'0.4rem', fontSize:'0.85rem'}} value={editPatientData.solicitingClinicId} onChange={e => setEditPatientData({...editPatientData, solicitingClinicId: e.target.value})} disabled={currentUserRole === 'MEDICO'}>
-                        <option value="">Nenhuma</option>
-                        {clinics.map((c: any) => (
-                          <option key={c.id} value={c.id}>{c.nome}</option>
-                        ))}
-                      </select>
-                    </td>
-                    <td>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                        <select className="form-select" style={{padding:'0.4rem', fontSize:'0.85rem'}} value={editPatientData.executingDoctorId || ''} onChange={e => setEditPatientData({...editPatientData, executingDoctorId: e.target.value})} disabled={currentUserRole === 'MEDICO'}>
-                          <option value="">Selecione Médico...</option>
-                          {doctors.map((d: any) => (
-                            <option key={d.id} value={d.id}>{d.nome}</option>
-                          ))}
-                        </select>
-                        <select className="form-select" style={{padding:'0.4rem', fontSize:'0.85rem'}} value={editPatientData.executionLocationId || ''} onChange={e => setEditPatientData({...editPatientData, executionLocationId: e.target.value})} disabled={currentUserRole === 'MEDICO'}>
-                          <option value="">Selecione Local...</option>
-                          {locations.map((l: any) => (
-                            <option key={l.id} value={l.id}>{l.nome}</option>
-                          ))}
-                        </select>
-                        <input type="date" className="form-input" style={{padding:'0.4rem', fontSize:'0.85rem'}} value={editPatientData.dataAgendamento || ''} onChange={e => setEditPatientData({...editPatientData, dataAgendamento: e.target.value})} disabled={currentUserRole === 'MEDICO'} />
-                      </div>
-                    </td>
-                    <td>
-                      <span className={`badge ${
-                        paciente.status === 'Agendado' ? 'badge-scheduled' :
-                        paciente.status === 'Cancelado' ? 'badge-cancelled' : 'badge-pending'
-                      }`}>
-                        {paciente.status}
-                      </span>
-                    </td>
-                    <td>
-                      <div style={{ display: 'flex', gap: '0.25rem' }}>
-                        <button className={styles.actionBtn} style={{color: 'var(--success-color)', background: 'rgba(16, 185, 129, 0.1)'}} onClick={saveEditPatient}><Check size={18} /></button>
-                        <button className={styles.actionBtn} style={{color: 'var(--text-tertiary)', background: 'rgba(0,0,0, 0.05)'}} onClick={() => setEditingPatientId(null)}><X size={18} /></button>
-                      </div>
-                    </td>
-                  </>
-                ) : (
-                  <>
-                    <td className={styles.fontMedium}>{paciente.nome}</td>
-                    <td>#{paciente.prontuario}</td>
-                    <td>{paciente.lateralidade}</td>
-                    <td>{paciente.procedimento} <span style={{fontSize: '0.8rem', color: 'var(--text-secondary)'}}>({paciente.valor})</span></td>
-                    <td>{paciente.solicitingClinic?.nome || '-'}</td>
-                    <td>
-                      {paciente.executionLocation?.nome ? (
-                        <div style={{fontSize: '0.85rem'}}>
-                          <strong>{paciente.executionLocation.nome}</strong><br/>
-                          {paciente.executingDoctor?.nome && <span style={{color: 'var(--text-secondary)'}}>Médico: {paciente.executingDoctor.nome}<br/></span>}
-                          <small>{new Date(paciente.dataAgendamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</small>
-                        </div>
-                      ) : '-'}
-                    </td>
-                    <td>
-                      <span className={`badge ${
-                        paciente.status === 'Agendado' ? 'badge-scheduled' :
-                        paciente.status === 'Cancelado' ? 'badge-cancelled' : 'badge-pending'
-                      }`}>
-                        {paciente.status}
-                      </span>
-                      {paciente.status === 'Agendado' && (
-                        <div style={{ marginTop: '0.25rem', fontSize: '0.75rem', fontWeight: 600, color: paciente.pacienteConfirmado ? 'var(--success-color)' : 'var(--warning-color)' }}>
-                          {paciente.pacienteConfirmado ? '✓ Confirmado' : '⚠ Pendente de Confirmação'}
-                        </div>
-                      )}
-                    </td>
-                    <td>
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        {paciente.status !== 'Cancelado' && (
-                          <button className={styles.actionBtn} style={{color: 'var(--navy-blue)', background: 'rgba(5, 10, 31, 0.05)'}} title="Editar Paciente" onClick={() => startEditPatient(paciente)}>
-                            <Edit2 size={18} />
-                          </button>
-                        )}
-                        {paciente.status === 'Agendado' && (
-                          <>
-                            {!paciente.pacienteConfirmado && (
-                              <button className={styles.actionBtn} style={{ color: 'var(--success-color)', background: 'rgba(16, 185, 129, 0.1)' }} title="Confirmar Presença do Paciente" onClick={() => handleConfirm(paciente.id)}>
-                                <ThumbsUp size={18} />
-                              </button>
-                            )}
-                            <button className={styles.actionBtn} style={{ color: 'var(--warning-color)', background: 'rgba(245, 158, 11, 0.1)' }} title="Reagendar" onClick={() => openScheduleModal(paciente)}>
-                              <MapPin size={18} />
-                            </button>
-                          </>
-                        )}
-                        {paciente.status === 'Agendado' && (currentUserRole === 'ADMIN' || currentUserRole === 'MEDICO') && (
-                          <button className={styles.actionBtn} style={{ color: 'var(--success-color)', background: 'rgba(16, 185, 129, 0.1)' }} title="Marcar como Realizado" onClick={() => handleMarkCompleted(paciente.id)}>
-                            <Check size={18} />
-                          </button>
-                        )}
-                        {paciente.status === 'No Aguardo' && canApprove && (
-                          <button className={styles.actionBtn} style={{ color: 'var(--primary-color)', background: 'rgba(59, 130, 246, 0.1)' }} title="Agendar Local" onClick={() => openScheduleModal(paciente)}>
-                            <MapPin size={18} />
-                          </button>
-                        )}
-                        {paciente.status !== 'Cancelado' && currentUserRole !== 'MEDICO' && (
-                          <button className={styles.actionBtn} title="Cancelar" onClick={() => openDeleteModal(paciente.id)}>
-                            <Trash2 size={18} />
-                          </button>
-                        )}
-                      </div>
-                    </td>
-                  </>
-                )}
-              </tr>
-            ))}
-            {filteredPacientes.length === 0 && (
-              <tr><td colSpan={8} className={styles.emptyState}>Nenhum registro encontrado.</td></tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-      </div>
       )}
 
       {isScheduleModalOpen && (
