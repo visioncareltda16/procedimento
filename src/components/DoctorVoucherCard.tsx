@@ -71,29 +71,20 @@ export default function DoctorVoucherCard({
     }
   };
 
-  const barcodeWidths = [2, 1, 3, 1, 2, 4, 1, 2, 1, 3, 2, 1, 1, 4, 2, 1, 3, 2, 1, 2];
-
   return (
     <>
       <div style={{
-        background: 'var(--bg-secondary)',
-        borderRadius: '16px',
-        boxShadow: '0 12px 36px rgba(0, 0, 0, 0.08)',
+        background: isCompleted ? 'rgba(16, 185, 129, 0.05)' : 'var(--bg-secondary)',
+        border: `1px solid ${isCompleted ? 'var(--success-color)' : 'var(--border-color)'}`,
+        borderRadius: '12px',
+        padding: '1.5rem',
         display: 'flex',
         flexDirection: 'column',
+        gap: '1rem',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
         position: 'relative',
-        border: '1px solid var(--border-color)',
-        overflow: 'hidden',
-        transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-      }}
-      className="voucher-card-hover"
-      >
-        {/* Main Section */}
-        <div style={{ 
-          padding: '1.5rem', 
-          background: isCompleted ? 'rgba(16, 185, 129, 0.04)' : 'transparent',
-          position: 'relative'
-        }}>
+        overflow: 'hidden'
+      }}>
         {isCompleted && (
           <div style={{
             position: 'absolute',
@@ -137,74 +128,43 @@ export default function DoctorVoucherCard({
           </div>
         )}
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
-            <div>
-              <h3 style={{ margin: '0 0 0.25rem 0', fontSize: '1.15rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700 }}>
-                <User size={20} color="var(--primary-color)" /> {paciente.nome}
-              </h3>
-              <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', fontFamily: 'monospace', letterSpacing: '0.5px' }}>
-                PRONTUÁRIO: #{paciente.prontuario}
-              </span>
-            </div>
-            <div style={{ 
-              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.2))', 
-              color: 'var(--primary-color)', 
-              padding: '0.3rem 0.8rem', 
-              borderRadius: '20px', 
-              fontSize: '0.8rem', 
-              fontWeight: 700,
-              boxShadow: '0 2px 4px rgba(59, 130, 246, 0.1)'
-            }}>
-              {paciente.lateralidade}
-            </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <div>
+            <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <User size={18} color="var(--primary-color)" /> {paciente.nome}
+            </h3>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Prontuário: #{paciente.prontuario}</span>
           </div>
-
-          <div style={{ padding: '1.25rem', background: 'rgba(0,0,0,0.02)', borderRadius: '12px', border: '1px solid rgba(0,0,0,0.05)' }}>
-            <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.05rem' }}>
-              <Eye size={18} color="var(--primary-color)" /> {paciente.procedimento}
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              {paciente.dataAgendamento ? (
-                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <Calendar size={16} style={{ color: 'var(--primary-color)' }} /> 
-                  <strong>{new Date(paciente.dataAgendamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</strong>
-                </div>
-              ) : (
-                <div style={{ fontSize: '0.9rem', color: 'var(--danger-color)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <Calendar size={16} /> Data a definir
-                </div>
-              )}
-              {paciente.executionLocation?.nome ? (
-                <div style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <MapPin size={16} style={{ color: 'var(--primary-color)' }} /> 
-                  <span>{paciente.executionLocation.nome}</span>
-                </div>
-              ) : (
-                <div style={{ fontSize: '0.9rem', color: 'var(--danger-color)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                  <MapPin size={16} /> Local a definir
-                </div>
-              )}
-            </div>
+          <div style={{ background: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary-color)', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600 }}>
+            {paciente.lateralidade}
           </div>
         </div>
 
-        {/* Perforated Divider */}
-        <div style={{ position: 'relative', height: '24px', display: 'flex', alignItems: 'center', background: isCompleted ? 'rgba(16, 185, 129, 0.04)' : 'rgba(0,0,0,0.01)' }}>
-           <div style={{ position: 'absolute', left: '-12px', width: '24px', height: '24px', borderRadius: '50%', background: 'var(--bg-primary)', borderRight: '1px solid var(--border-color)' }}></div>
-           <div style={{ flex: 1, borderTop: '2px dashed rgba(0,0,0,0.15)', margin: '0 20px' }}></div>
-           <div style={{ position: 'absolute', right: '-12px', width: '24px', height: '24px', borderRadius: '50%', background: 'var(--bg-primary)', borderLeft: '1px solid var(--border-color)' }}></div>
+        <div style={{ padding: '1rem', background: 'rgba(0,0,0,0.02)', borderRadius: '8px', border: '1px dashed var(--border-color)' }}>
+          <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Eye size={16} color="var(--primary-color)" /> {paciente.procedimento}
+          </div>
+          {paciente.dataAgendamento ? (
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
+              <Calendar size={14} /> {new Date(paciente.dataAgendamento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
+            </div>
+          ) : (
+             <div style={{ fontSize: '0.85rem', color: 'var(--danger-color)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
+              <Calendar size={14} /> Data a definir
+            </div>
+          )}
+          {paciente.executionLocation?.nome ? (
+            <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
+              <MapPin size={14} /> {paciente.executionLocation.nome}
+            </div>
+          ) : (
+            <div style={{ fontSize: '0.85rem', color: 'var(--danger-color)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.5rem' }}>
+              <MapPin size={14} /> Local a definir
+            </div>
+          )}
         </div>
 
-        {/* Actions / Stub Section */}
-        <div style={{ padding: '1.5rem', background: isCompleted ? 'rgba(16, 185, 129, 0.04)' : 'rgba(0,0,0,0.01)', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          
-          <div style={{ display: 'flex', justifyContent: 'center', opacity: 0.15, alignItems: 'center', height: '40px' }}>
-            {barcodeWidths.map((w, i) => (
-              <div key={i} style={{ width: `${w}px`, height: '100%', background: 'var(--text-primary)', margin: '0 1.5px', borderRadius: '1px' }}></div>
-            ))}
-          </div>
-
-          <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+        <div style={{ marginTop: 'auto', display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {isWaiting && (
             <button 
               className="btn btn-primary" 
@@ -252,7 +212,6 @@ export default function DoctorVoucherCard({
               <Undo2 size={18} /> Desfazer Baixa
             </button>
           )}
-          </div>
         </div>
       </div>
 
