@@ -10,7 +10,12 @@ export async function GET(request: Request) {
     });
 
     if (existingAdmin) {
-      return NextResponse.json({ message: 'Admin já existe', email: existingAdmin.email });
+      // Força o admin a ficar aprovado caso não esteja
+      await prisma.user.update({
+        where: { id: existingAdmin.id },
+        data: { status: 'APPROVED' }
+      });
+      return NextResponse.json({ message: 'Admin já existe e foi aprovado', email: existingAdmin.email });
     }
 
     // Cria o admin inicial
@@ -20,7 +25,8 @@ export async function GET(request: Request) {
         name: 'Administrador Vercel',
         email: 'admin@vision.com',
         password: hashedPassword,
-        role: 'ADMIN'
+        role: 'ADMIN',
+        status: 'APPROVED'
       }
     });
 
