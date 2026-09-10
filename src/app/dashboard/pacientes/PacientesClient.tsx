@@ -219,7 +219,8 @@ export default function PacientesClient({
   })() : doctors;
 
   return (
-    <div className="animate-fade-in">
+    <>
+      <div className="animate-fade-in">
       <div className={styles.header}>
         <div className={styles.searchBar}>
           <Search size={20} className={styles.searchIcon} />
@@ -476,6 +477,6 @@ export default function PacientesClient({
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
