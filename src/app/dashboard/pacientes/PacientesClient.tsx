@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Search, Plus, Trash2, X, MapPin, Edit2, Check, ThumbsUp } from 'lucide-react';
 import styles from './Pacientes.module.css';
 import { createPatient, cancelPatient, schedulePatient, updatePatient, markPatientAsCompleted, confirmPaciente } from '@/app/actions';
@@ -18,6 +19,9 @@ export default function PacientesClient({
   const [filterMonth, setFilterMonth] = useState('');
   const [filterDate, setFilterDate] = useState('');
   
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedPacienteId, setSelectedPacienteId] = useState<string | null>(null);
   const [justificativa, setJustificativa] = useState('');
@@ -283,7 +287,7 @@ export default function PacientesClient({
         )}
       </div>
 
-      {editingPatientId !== null && (
+      {mounted && editingPatientId !== null && createPortal(
         <div className={styles.modalOverlay}>
           <div className={`glass-panel ${styles.modal}`} style={{ maxHeight: '90vh', overflowY: 'auto' }}>
             <div className={styles.modalHeader}>
@@ -357,9 +361,9 @@ export default function PacientesClient({
             </form>
           </div>
         </div>
-      )}
+      , document.body)}
 
-      {isScheduleModalOpen && (
+      {mounted && isScheduleModalOpen && createPortal(
         <div className={styles.modalOverlay}>
           <div className={`glass-panel ${styles.modal}`}>
             <div className={styles.modalHeader}>
@@ -396,9 +400,9 @@ export default function PacientesClient({
             </form>
           </div>
         </div>
-      )}
+      , document.body)}
 
-      {isDeleteModalOpen && (
+      {mounted && isDeleteModalOpen && createPortal(
         <div className={styles.modalOverlay}>
           <div className={`glass-panel ${styles.modal}`}>
             <div className={styles.modalHeader}>
@@ -421,9 +425,9 @@ export default function PacientesClient({
             </form>
           </div>
         </div>
-      )}
+      , document.body)}
 
-      {isNewModalOpen && (
+      {mounted && isNewModalOpen && createPortal(
         <div className={styles.modalOverlay}>
           <div className={`glass-panel ${styles.modal}`}>
             <div className={styles.modalHeader}>
@@ -476,7 +480,7 @@ export default function PacientesClient({
             </form>
           </div>
         </div>
-      )}
+      , document.body)}
     </>
   );
 }

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { User, Eye, Check, Calendar, MapPin, Undo2, ThumbsUp, Edit2, Trash2, Building } from 'lucide-react';
 import { markPatientAsCompleted, undoPatientCompletion, confirmPaciente } from '@/app/actions';
 
@@ -25,6 +26,9 @@ export default function DoctorVoucherCard({
   const [senha, setSenha] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const isCompleted = paciente.status === 'Realizado';
   const isWaiting = paciente.status === 'No Aguardo';
@@ -238,7 +242,7 @@ export default function DoctorVoucherCard({
         </div>
       </div>
 
-      {isModalOpen && (
+      {mounted && isModalOpen && createPortal(
         <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
           <div className="glass-panel animate-fade-in" style={{ background: 'var(--bg-secondary)', padding: '2rem', width: '90%', maxWidth: '400px', borderRadius: '16px' }}>
             <h3 style={{ margin: '0 0 1rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -272,7 +276,7 @@ export default function DoctorVoucherCard({
             </form>
           </div>
         </div>
-      )}
+      , document.body)}
     </>
   );
 }
