@@ -286,6 +286,7 @@ export default function PacientesClient({
           </div>
         )}
       </div>
+      </div>
 
       {mounted && editingPatientId !== null && createPortal(
         <div className={styles.modalOverlay}>
