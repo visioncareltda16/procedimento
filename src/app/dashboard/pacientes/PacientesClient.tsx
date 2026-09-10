@@ -207,10 +207,16 @@ export default function PacientesClient({
 
   const canApprove = currentUserRole?.toUpperCase() === 'ADMIN' || currentUserRole?.toUpperCase() === 'MEDICO';
 
-  const filteredLocations = scheduleDoctorId ? locations.filter((loc: any) => {
+  const filteredLocations = scheduleDoctorId ? (() => {
     const doc = doctors.find((d: any) => d.id === scheduleDoctorId);
-    return doc?.executionLocations?.some((dl: any) => dl.locationId === loc.id);
-  }) : locations;
+    const linked = locations.filter((loc: any) => doc?.executionLocations?.some((dl: any) => dl.locationId === loc.id));
+    return linked.length > 0 ? linked : locations;
+  })() : locations;
+
+  const filteredDoctors = scheduleLocalId ? (() => {
+    const linked = doctors.filter((doc: any) => doc.executionLocations?.some((dl: any) => dl.locationId === scheduleLocalId));
+    return linked.length > 0 ? linked : doctors;
+  })() : doctors;
 
   return (
     <div className="animate-fade-in">
@@ -373,7 +379,7 @@ export default function PacientesClient({
                 <label className="form-label">Médico Executor (opcional)</label>
                 <select className="form-select" value={scheduleDoctorId} onChange={(e) => setScheduleDoctorId(e.target.value)}>
                   <option value="">Nenhum / A definir</option>
-                  {doctors?.map((doc: any) => (
+                  {filteredDoctors.map((doc: any) => (
                     <option key={doc.id} value={doc.id}>{doc.nome}</option>
                   ))}
                 </select>
