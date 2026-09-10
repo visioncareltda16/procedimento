@@ -87,10 +87,10 @@ export default function DoctorVoucherCard({
         background: isCompleted ? 'rgba(16, 185, 129, 0.05)' : 'var(--bg-secondary)',
         border: `1px solid ${isCompleted ? 'var(--success-color)' : 'var(--border-color)'}`,
         borderRadius: '12px',
-        padding: '1.5rem',
+        padding: '1rem',
         display: 'flex',
         flexDirection: 'column',
-        gap: '1rem',
+        gap: '0.75rem',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
         position: 'relative',
         overflow: 'hidden'
@@ -156,13 +156,13 @@ export default function DoctorVoucherCard({
                 <Trash2 size={16} />
               </button>
             )}
-            <div style={{ background: 'rgba(59, 130, 246, 0.1)', color: 'var(--primary-color)', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600 }}>
+            <div style={{ background: 'var(--primary-color)', color: '#fff', padding: '0.3rem 0.8rem', borderRadius: '6px', fontSize: '1rem', fontWeight: 800, boxShadow: '0 2px 4px rgba(0,0,0,0.15)' }}>
               {paciente.lateralidade}
             </div>
           </div>
         </div>
 
-        <div style={{ padding: '1rem', background: 'rgba(0,0,0,0.02)', borderRadius: '8px', border: '1px dashed var(--border-color)' }}>
+        <div style={{ padding: '0.75rem', background: 'rgba(0,0,0,0.02)', borderRadius: '8px', border: '1px dashed var(--border-color)' }}>
           <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Eye size={16} color="var(--primary-color)" /> {paciente.procedimento}
           </div>
