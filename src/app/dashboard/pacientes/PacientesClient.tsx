@@ -163,9 +163,18 @@ export default function PacientesClient({
     }
     setIsSaving(true);
     try {
-      await createPatient({
-        nome, prontuario, lateralidade, procedimento, valor, solicitingClinicId
-      }, currentUserId);
+      if (lateralidade === 'AMBOS') {
+        await createPatient({
+          nome, prontuario, lateralidade: 'OD', procedimento, valor, solicitingClinicId
+        }, currentUserId);
+        await createPatient({
+          nome, prontuario, lateralidade: 'OE', procedimento, valor, solicitingClinicId
+        }, currentUserId);
+      } else {
+        await createPatient({
+          nome, prontuario, lateralidade, procedimento, valor, solicitingClinicId
+        }, currentUserId);
+      }
       setIsNewModalOpen(false);
       setNome(''); setProntuario(''); setLateralidade('OD'); setProcedimento(''); setValor(''); setSolicitingClinicId('');
     } catch (err) {
@@ -437,6 +446,7 @@ export default function PacientesClient({
                 <select className="form-select" required value={lateralidade} onChange={e => setLateralidade(e.target.value)}>
                   <option value="OD">Olho Direito (OD)</option>
                   <option value="OE">Olho Esquerdo (OE)</option>
+                  <option value="AMBOS">Ambos (OD e OE)</option>
                 </select>
               </div>
               <div className="form-group">
