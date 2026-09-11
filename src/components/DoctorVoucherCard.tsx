@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { User, Eye, Check, Calendar, MapPin, Undo2, ThumbsUp, Edit2, Trash2, Building } from 'lucide-react';
-import { markPatientAsCompleted, undoPatientCompletion, confirmPaciente } from '@/app/actions';
+import { markPatientAsCompleted, undoPatientCompletion, confirmPaciente, undoConfirmPaciente } from '@/app/actions';
 
 export default function DoctorVoucherCard({ 
   paciente, 
@@ -78,6 +78,17 @@ export default function DoctorVoucherCard({
       onUpdate();
     } catch (err) {
       alert("Erro ao confirmar paciente.");
+    }
+  };
+
+  const handleUndoConfirm = async () => {
+    if (confirm("Deseja cancelar a confirmação deste paciente?")) {
+      try {
+        await undoConfirmPaciente(paciente.id);
+        onUpdate();
+      } catch (err) {
+        alert("Erro ao desfazer confirmação.");
+      }
     }
   };
 
@@ -202,13 +213,22 @@ export default function DoctorVoucherCard({
 
           {!isCompleted && paciente.status === 'Agendado' && (
             <>
-              {!paciente.pacienteConfirmado && (
+              {!paciente.pacienteConfirmado ? (
                 <button 
                   className="btn btn-outline" 
                   style={{ flex: 1, minWidth: '120px', display: 'flex', justifyContent: 'center', color: 'var(--success-color)', borderColor: 'var(--success-color)' }}
                   onClick={handleConfirm}
                 >
                   <ThumbsUp size={18} /> Confirmar
+                </button>
+              ) : (
+                <button 
+                  className="btn btn-outline" 
+                  style={{ flex: 1, minWidth: '120px', display: 'flex', justifyContent: 'center', color: 'var(--text-secondary)', borderColor: 'var(--border-color)' }}
+                  onClick={handleUndoConfirm}
+                  title="Cancelar confirmação"
+                >
+                  <Undo2 size={18} /> Desc. Confirmar
                 </button>
               )}
               <button 

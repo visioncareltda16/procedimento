@@ -178,6 +178,16 @@ export async function confirmPaciente(patientId: string) {
   return patient;
 }
 
+export async function undoConfirmPaciente(patientId: string) {
+  const patient = await prisma.patient.update({
+    where: { id: patientId },
+    data: { pacienteConfirmado: false }
+  });
+  revalidatePath('/dashboard');
+  revalidatePath('/dashboard/pacientes');
+  return patient;
+}
+
 export async function markPatientAsCompleted(patientId: string) {
   const patient = await prisma.patient.update({
     where: { id: patientId },
