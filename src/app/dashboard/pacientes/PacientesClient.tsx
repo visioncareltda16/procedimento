@@ -284,7 +284,7 @@ export default function PacientesClient({
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem', marginTop: '1.5rem', alignItems: 'start' }}>
         {filteredPacientes.map(paciente => (
           <DoctorVoucherCard 
             key={paciente.id} 
