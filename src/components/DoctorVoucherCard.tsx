@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { User, Eye, Check, Calendar, MapPin, Undo2, ThumbsUp, Edit2, Trash2, Building } from 'lucide-react';
+import { User, Eye, Check, Calendar, MapPin, Undo2, ThumbsUp, Edit2, Trash2, Building, ChevronDown, ChevronUp } from 'lucide-react';
 import { markPatientAsCompleted, undoPatientCompletion, confirmPaciente, undoConfirmPaciente } from '@/app/actions';
 
 export default function DoctorVoucherCard({ 
@@ -26,6 +26,7 @@ export default function DoctorVoucherCard({
   const [senha, setSenha] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [isExpanded, setIsExpanded] = useState(paciente.status !== 'Realizado' && paciente.status !== 'Cancelado');
   
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -55,7 +56,7 @@ export default function DoctorVoucherCard({
         setIsVerifying(false);
         return;
       }
-      await markPatientAsCompleted(paciente.id);
+      await markPatientAsCompleted(paciente.id, currentUserId);
       setIsModalOpen(false);
       onUpdate();
     } catch (err) {
@@ -170,10 +171,36 @@ export default function DoctorVoucherCard({
             <div style={{ background: 'var(--primary-color)', color: '#fff', padding: '0.3rem 0.8rem', borderRadius: '6px', fontSize: '1rem', fontWeight: 800, boxShadow: '0 2px 4px rgba(0,0,0,0.15)' }}>
               {paciente.lateralidade}
             </div>
+            {(paciente.status === 'Realizado' || paciente.status === 'Cancelado') && (
+              <button className="btn-icon" onClick={() => setIsExpanded(!isExpanded)} title={isExpanded ? "Recolher" : "Expandir"}>
+                {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+              </button>
+            )}
           </div>
         </div>
 
-        <div style={{ padding: '0.75rem', background: 'rgba(0,0,0,0.02)', borderRadius: '8px', border: '1px dashed var(--border-color)' }}>
+        {paciente.status === 'Cancelado' && (
+          <div style={{
+            position: 'absolute',
+            top: '50%', left: '50%',
+            transform: 'translate(-50%, -50%) rotate(-15deg)',
+            fontSize: '1.8rem',
+            fontWeight: '900',
+            color: 'rgba(239, 68, 68, 0.7)',
+            border: '4px solid rgba(239, 68, 68, 0.7)',
+            padding: '0.5rem 1rem',
+            borderRadius: '8px',
+            pointerEvents: 'none',
+            zIndex: 10,
+            whiteSpace: 'nowrap'
+          }}>
+            CANCELADO
+          </div>
+        )}
+
+        {isExpanded && (
+          <>
+            <div style={{ padding: '0.75rem', background: 'rgba(0,0,0,0.02)', borderRadius: '8px', border: '1px dashed var(--border-color)' }}>
           <div style={{ fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <Eye size={16} color="var(--primary-color)" /> {paciente.procedimento}
           </div>
@@ -244,7 +271,7 @@ export default function DoctorVoucherCard({
                   style={{ flex: 1, minWidth: '120px', display: 'flex', justifyContent: 'center', background: 'var(--success-color)' }}
                   onClick={() => setIsModalOpen(true)}
                 >
-                  <Check size={18} /> Baixa
+                  <Check size={18} /> Executado
                 </button>
               )}
             </>
@@ -256,10 +283,19 @@ export default function DoctorVoucherCard({
               style={{ flex: 1, display: 'flex', justifyContent: 'center', color: 'var(--danger-color)', borderColor: 'var(--danger-color)' }}
               onClick={handleUndo}
             >
-              <Undo2 size={18} /> Desfazer Baixa
+              <Undo2 size={18} /> Desfazer Execução
             </button>
           )}
         </div>
+
+        {isCompleted && paciente.executedAt && paciente.executedBy && (
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginTop: '0.5rem', textAlign: 'right' }}>
+            Executado por <strong>{paciente.executedBy.name}</strong> em {new Date(paciente.executedAt).toLocaleString('pt-BR')}
+          </div>
+        )}
+
+        </>
+        )}
       </div>
 
       {mounted && isModalOpen && createPortal(
@@ -269,7 +305,7 @@ export default function DoctorVoucherCard({
               <Check color="var(--success-color)" /> Confirmar Realização
             </h3>
             <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-              Confirme com sua senha para dar baixa no procedimento de <strong>{paciente.nome}</strong>.
+              Confirme com sua senha para dar como executado o procedimento de <strong>{paciente.nome}</strong>.
             </p>
             <form onSubmit={handleMarkCompleted} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div>

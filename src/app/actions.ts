@@ -35,7 +35,8 @@ export async function getPatients(userId?: string, userRole?: string) {
       requester: true,
       solicitingClinic: true,
       executionLocation: true,
-      executingDoctor: true
+      executingDoctor: true,
+      executedBy: true
     }
   });
   return patients;
@@ -188,10 +189,14 @@ export async function undoConfirmPaciente(patientId: string) {
   return patient;
 }
 
-export async function markPatientAsCompleted(patientId: string) {
+export async function markPatientAsCompleted(patientId: string, userId: string) {
   const patient = await prisma.patient.update({
     where: { id: patientId },
-    data: { status: 'Realizado' }
+    data: { 
+      status: 'Realizado',
+      executedAt: new Date(),
+      executedById: userId
+    }
   });
   revalidatePath('/dashboard');
   revalidatePath('/dashboard/pacientes');

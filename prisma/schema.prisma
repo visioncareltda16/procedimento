@@ -20,6 +20,7 @@ model User {
 
   cancellations     CancellationLog[]
   patientsRequested Patient[]         @relation("Requester")
+  patientsExecuted  Patient[]         @relation("PatientExecutedBy")
   notifications     Notification[]
   userClinics       UserClinic[]
   fcmTokens         FcmToken[]
@@ -93,6 +94,10 @@ model Patient {
 
   executingDoctorId   String?
   executingDoctor     ExecutingDoctor?   @relation(fields: [executingDoctorId], references: [id])
+
+  executedAt          DateTime?
+  executedById        String?
+  executedBy          User?              @relation("PatientExecutedBy", fields: [executedById], references: [id])
 
   cancellations CancellationLog[]
 }

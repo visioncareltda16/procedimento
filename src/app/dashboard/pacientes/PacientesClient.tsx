@@ -15,7 +15,7 @@ export default function PacientesClient({
 }) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('');
+  const [filterStatus, setFilterStatus] = useState<string[]>(['Agendado', 'No Aguardo']);
   const [filterMonth, setFilterMonth] = useState('');
   const [filterDate, setFilterDate] = useState('');
   
@@ -49,7 +49,7 @@ export default function PacientesClient({
 
   const filteredPacientes = initialPacientes.filter(p => {
     const matchesSearch = p.nome.toLowerCase().includes(searchTerm.toLowerCase()) || p.prontuario.includes(searchTerm);
-    const matchesStatus = filterStatus ? p.status === filterStatus : true;
+    const matchesStatus = filterStatus.length === 0 || filterStatus.includes(p.status);
     
     let matchesMonth = true;
     let matchesDate = true;
@@ -232,14 +232,27 @@ export default function PacientesClient({
         </div>
         
         {/* Filters */}
-        <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', flex: 1 }}>
-          <select className="form-select" value={filterStatus} onChange={e => setFilterStatus(e.target.value)} style={{ width: 'auto', minWidth: '130px' }}>
-            <option value="">Status: Todos</option>
-            <option value="Agendado">Agendado</option>
-            <option value="No Aguardo">No Aguardo</option>
-            <option value="Realizado">Realizado</option>
-            <option value="Cancelado">Cancelado</option>
-          </select>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', flex: 1, alignItems: 'center' }}>
+          
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Status:</span>
+            {['Agendado', 'No Aguardo', 'Realizado', 'Cancelado'].map(status => (
+              <label key={status} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', cursor: 'pointer' }}>
+                <input 
+                  type="checkbox" 
+                  checked={filterStatus.includes(status)}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setFilterStatus([...filterStatus, status]);
+                    } else {
+                      setFilterStatus(filterStatus.filter(s => s !== status));
+                    }
+                  }}
+                />
+                {status}
+              </label>
+            ))}
+          </div>
           
           <input 
             type="month" 
@@ -275,8 +288,8 @@ export default function PacientesClient({
             isAdmin={currentUserRole?.toUpperCase() === 'ADMIN'}
             onUpdate={() => router.refresh()}
             onSchedule={() => openScheduleModal(paciente)}
-            onEdit={paciente.status !== 'Cancelado' && currentUserRole?.toUpperCase() !== 'MEDICO' ? () => startEditPatient(paciente) : undefined}
-            onDelete={paciente.status !== 'Cancelado' && currentUserRole?.toUpperCase() !== 'MEDICO' ? () => openDeleteModal(paciente.id) : undefined}
+            onEdit={paciente.status !== 'Cancelado' ? () => startEditPatient(paciente) : undefined}
+            onDelete={paciente.status !== 'Cancelado' ? () => openDeleteModal(paciente.id) : undefined}
             canApprove={canApprove}
           />
         ))}
