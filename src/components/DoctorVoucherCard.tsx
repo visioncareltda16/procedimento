@@ -238,7 +238,7 @@ export default function DoctorVoucherCard({
               >
                 <MapPin size={18} /> Reagendar
               </button>
-              {canApprove && (
+              {canApprove && paciente.pacienteConfirmado && (
                 <button 
                   className="btn btn-primary" 
                   style={{ flex: 1, minWidth: '120px', display: 'flex', justifyContent: 'center', background: 'var(--success-color)' }}
