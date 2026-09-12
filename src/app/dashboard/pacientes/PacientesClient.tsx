@@ -92,7 +92,7 @@ export default function PacientesClient({
 
   const handleMarkCompleted = async (id: string) => {
     try {
-      await markPatientAsCompleted(id);
+      await markPatientAsCompleted(id, currentUserId);
     } catch (err) {
       alert("Erro ao marcar como realizado.");
     }
