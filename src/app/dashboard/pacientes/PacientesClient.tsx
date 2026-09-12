@@ -225,19 +225,26 @@ export default function PacientesClient({
   return (
     <>
       <div className="animate-fade-in">
-      <div className={styles.header}>
-        <div className={styles.searchBar}>
-          <Search size={20} className={styles.searchIcon} />
-          <input type="text" placeholder="Buscar por nome ou prontuário..." className="form-input" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+          <div className={styles.searchBar}>
+            <Search size={20} className={styles.searchIcon} />
+            <input type="text" placeholder="Buscar por nome ou prontuário..." className="form-input" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+          </div>
+          
+          <button className="btn btn-primary" onClick={() => setIsNewModalOpen(true)}>
+            <Plus size={18} />
+            <span>Novo Agendamento</span>
+          </button>
         </div>
         
         {/* Filters */}
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', flex: 1, alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', background: 'var(--bg-secondary)', padding: '0.75rem 1.25rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}>
           
-          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Status:</span>
+          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center', marginRight: 'auto' }}>
+            <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Filtrar Status:</span>
             {['Agendado', 'No Aguardo', 'Realizado', 'Cancelado'].map(status => (
-              <label key={status} style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.85rem', cursor: 'pointer' }}>
+              <label key={status} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', cursor: 'pointer', background: 'var(--bg-tertiary)', padding: '0.3rem 0.6rem', borderRadius: '6px' }}>
                 <input 
                   type="checkbox" 
                   checked={filterStatus.includes(status)}
@@ -248,35 +255,33 @@ export default function PacientesClient({
                       setFilterStatus(filterStatus.filter(s => s !== status));
                     }
                   }}
+                  style={{ accentColor: 'var(--primary-color)', width: '16px', height: '16px', cursor: 'pointer' }}
                 />
                 {status}
               </label>
             ))}
           </div>
           
-          <input 
-            type="month" 
-            className="form-input" 
-            value={filterMonth} 
-            onChange={e => { setFilterMonth(e.target.value); setFilterDate(''); }}
-            title="Filtrar por Mês"
-            style={{ width: 'auto' }}
-          />
-
-          <input 
-            type="date" 
-            className="form-input" 
-            value={filterDate} 
-            onChange={e => { setFilterDate(e.target.value); setFilterMonth(''); }}
-            title="Filtrar por Dia Específico"
-            style={{ width: 'auto' }}
-          />
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <input 
+              type="month" 
+              className="form-input" 
+              value={filterMonth} 
+              onChange={e => { setFilterMonth(e.target.value); setFilterDate(''); }}
+              title="Filtrar por Mês"
+              style={{ width: 'auto', padding: '0.4rem 0.8rem', fontSize: '0.9rem' }}
+            />
+            <span style={{ color: 'var(--text-tertiary)' }}>ou</span>
+            <input 
+              type="date" 
+              className="form-input" 
+              value={filterDate} 
+              onChange={e => { setFilterDate(e.target.value); setFilterMonth(''); }}
+              title="Filtrar por Dia Específico"
+              style={{ width: 'auto', padding: '0.4rem 0.8rem', fontSize: '0.9rem' }}
+            />
+          </div>
         </div>
-
-        <button className="btn btn-primary" onClick={() => setIsNewModalOpen(true)}>
-          <Plus size={18} />
-          <span>Novo Agendamento</span>
-        </button>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem', marginTop: '1.5rem' }}>
