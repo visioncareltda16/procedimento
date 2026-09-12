@@ -69,7 +69,7 @@ export default function PacientesClient({
     }
 
     return matchesSearch && matchesStatus && matchesMonth && matchesDate;
-  });
+  }).sort((a, b) => a.nome.localeCompare(b.nome));
 
   const startEditPatient = (p: any) => {
     setEditingPatientId(p.id);
