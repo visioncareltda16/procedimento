@@ -150,32 +150,42 @@ export default function DoctorVoucherCard({
           </div>
         )}
 
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
-            <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <User size={18} color="var(--primary-color)" /> {paciente.nome}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          {/* Primeira linha: Nome + Lateralidade */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '0.5rem' }}>
+            <h3 style={{ margin: 0, fontSize: '1.1rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'flex-start', gap: '0.5rem', flex: 1, lineHeight: '1.2' }}>
+              <User size={18} color="var(--primary-color)" style={{ flexShrink: 0, marginTop: '2px' }} /> 
+              <span style={{ wordBreak: 'break-word' }}>{paciente.nome}</span>
             </h3>
-            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Prontuário: #{paciente.prontuario}</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            {onEdit && (
-              <button className="btn-icon" onClick={onEdit} title="Editar" style={{ padding: '0.3rem' }}>
-                <Edit2 size={16} />
-              </button>
-            )}
-            {onDelete && (
-              <button className="btn-icon delete" onClick={onDelete} title="Excluir" style={{ padding: '0.3rem' }}>
-                <Trash2 size={16} />
-              </button>
-            )}
-            <div style={{ background: 'var(--primary-color)', color: '#fff', padding: '0.3rem 0.8rem', borderRadius: '6px', fontSize: '1rem', fontWeight: 800, boxShadow: '0 2px 4px rgba(0,0,0,0.15)' }}>
+            
+            <div style={{ background: 'var(--primary-color)', color: '#fff', padding: '0.3rem 0.8rem', borderRadius: '6px', fontSize: '1rem', fontWeight: 800, boxShadow: '0 2px 4px rgba(0,0,0,0.15)', flexShrink: 0 }}>
               {paciente.lateralidade}
             </div>
-            {(paciente.status === 'Realizado' || paciente.status === 'Cancelado') && (
-              <button className="btn-icon" onClick={() => setIsExpanded(!isExpanded)} title={isExpanded ? "Recolher" : "Expandir"}>
-                {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-              </button>
-            )}
+          </div>
+
+          {/* Segunda linha: Prontuário + Outros Ícones */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', marginLeft: '1.6rem' }}>
+              Prontuário: #{paciente.prontuario}
+            </span>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              {onEdit && (
+                <button className="btn-icon" onClick={onEdit} title="Editar" style={{ padding: '0.35rem' }}>
+                  <Edit2 size={16} />
+                </button>
+              )}
+              {onDelete && (
+                <button className="btn-icon delete" onClick={onDelete} title="Excluir" style={{ padding: '0.35rem' }}>
+                  <Trash2 size={16} />
+                </button>
+              )}
+              {(paciente.status === 'Realizado' || paciente.status === 'Cancelado') && (
+                <button className="btn-icon" onClick={() => setIsExpanded(!isExpanded)} title={isExpanded ? "Recolher" : "Expandir"} style={{ padding: '0.35rem' }}>
+                  {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
